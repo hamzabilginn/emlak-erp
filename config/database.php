@@ -245,6 +245,18 @@ class Database {
             $this->sslmode = getenv('DB_SSLMODE') ?: 'require';
         }
 
+        // Render: .env imaja dahil değil; DATABASE_URL hâlâ db.*.supabase.co ise IPv6 hatası sürer.
+        if (preg_match('#^db\.[^.]+\.supabase\.co$#i', $this->host)
+            && getenv('RENDER') === 'true') {
+            die(
+                'Veritabanı: Ortam değişkeninde hâlâ doğrudan Supabase sunucusu kullanılıyor '
+                . '(db.PROJE_REF.supabase.co). Render genelde bu adrese IPv6 ile gider ve bağlantı kurulamaz. '
+                . 'Supabase → Connect → Transaction pooler: host aws-….pooler.supabase.com, kullanıcı postgres.PROJE_REF. '
+                . 'Render’da Settings → Environment içinde DATABASE_URL veya DB_HOST’u bu pooler bilgileriyle güncelleyin '
+                . 've yeniden deploy edin. Not: .dockerignore nedeniyle .env dosyası canlı imaja girmez; sadece Render env kullanılır.'
+            );
+        }
+
         if ($this->password === '') {
             die(
                 'Veritabanı: Supabase veritabanı şifresi tanımlı değil. '
