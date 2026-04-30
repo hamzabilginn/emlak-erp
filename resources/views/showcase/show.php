@@ -45,7 +45,7 @@
                 <div class="carousel-inner">
                     <?php foreach ($images as $index => $img): ?>
                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                        <img src="<?= htmlspecialchars(\web_url('/emlak/public' . $img['image_path'])) ?>" class="d-block w-100" alt="İlan Fotoğrafı">
+                        <img src="<?= htmlspecialchars(\property_image_url((string) $img['image_path'])) ?>" class="d-block w-100" alt="İlan Fotoğrafı">
                     </div>
                     <?php endforeach; ?>
                 </div>

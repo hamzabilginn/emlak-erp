@@ -24,3 +24,20 @@ if (!function_exists('web_url')) {
         return $base . $p;
     }
 }
+
+if (!function_exists('property_image_url')) {
+    /**
+     * Veritabanındaki image_path: tam https (Supabase) veya eski yerel /uploads/... yolu.
+     */
+    function property_image_url(string $storedPath): string {
+        $storedPath = trim($storedPath);
+        if ($storedPath === '') {
+            return '';
+        }
+        if (preg_match('#^https?://#i', $storedPath) === 1) {
+            return $storedPath;
+        }
+        $prefix = str_starts_with($storedPath, '/') ? $storedPath : '/' . $storedPath;
+        return web_url('/emlak/public' . $prefix);
+    }
+}

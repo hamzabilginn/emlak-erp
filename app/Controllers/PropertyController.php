@@ -4,6 +4,7 @@ namespace App\Controllers;
 use App\Models\PropertyModel;
 use App\Models\PropertyImageModel;
 use App\Models\CustomerModel;
+use App\Services\SupabaseStorageClient;
 
 /**
  * Portföy / İlan Yönetimi Controller
@@ -83,8 +84,14 @@ class PropertyController extends BaseController {
         // 3. Base Model'in tenant_id güvenli insert'üne yolla
         $propertyId = $model->insert($data);
         if ($propertyId) {
-            $this->handleImages($propertyId);
-            $_SESSION['success'] = "Yeni emlak kaydı portföye başarıyla eklendi.";
+            $this->handleImages((int) $propertyId);
+            $imgErr = $_SESSION['error'] ?? '';
+            if ($imgErr !== '') {
+                unset($_SESSION['error']);
+                $_SESSION['success'] = 'Kayıt eklendi. Fotoğraf yükleme: ' . $imgErr;
+            } else {
+                $_SESSION['success'] = 'Yeni emlak kaydı portföye başarıyla eklendi.';
+            }
         } else {
             $_SESSION['error'] = "Ekleme sırasında veritabanı hatası oluştu.";
         }
@@ -143,7 +150,13 @@ class PropertyController extends BaseController {
 
         if ($model->update($id, $data)) {
             $this->handleImages($id);
-            $_SESSION['success'] = 'Emlak kaydı güncellendi.';
+            $imgErr = $_SESSION['error'] ?? '';
+            if ($imgErr !== '') {
+                unset($_SESSION['error']);
+                $_SESSION['success'] = 'Kayıt güncellendi. Fotoğraf yükleme: ' . $imgErr;
+            } else {
+                $_SESSION['success'] = 'Emlak kaydı güncellendi.';
+            }
         } else {
              $_SESSION['error'] = 'Güncelleme hatası.';
         }
@@ -152,38 +165,64 @@ class PropertyController extends BaseController {
 
 
     /**
-     * Çoklu resim yükleme işlemini yönetir ve veritabanına PropertyImageModel ile yazar
+     * Çoklu resim: geçici dosyayı Supabase Storage'a yükler, dönen herkese açık URL'i DB'ye yazar.
      */
     protected function handleImages(int $propertyId): void {
         if (!isset($_FILES['images']) || empty($_FILES['images']['name'][0])) {
             return;
         }
 
-        $uploadDir = __DIR__ . '/../../public/uploads/properties/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+        $storage = new SupabaseStorageClient();
+        if (!$storage->isConfigured()) {
+            $_SESSION['error'] = 'Supabase Storage kullanılamıyor: SUPABASE_URL ve SUPABASE_SERVICE_ROLE_KEY '
+                . 'ortam değişkenlerini ayarlayın. İsteğe bağlı: SUPABASE_STORAGE_BUCKET (varsayılan: ilan-fotograflari).';
+            return;
         }
 
+        $tenantId = (int) ($_SESSION['tenant_id'] ?? 0);
+        if ($tenantId <= 0) {
+            $_SESSION['error'] = 'Oturumdaki ofis bilgisi bulunamadı; fotoğraf yüklenemedi.';
+            return;
+        }
+
+        $mimeByExt = [
+            'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+            'png' => 'image/png', 'webp' => 'image/webp',
+        ];
+
         $imageModel = new PropertyImageModel();
-        
+        $errors = [];
+
         $fileCount = count($_FILES['images']['name']);
         for ($i = 0; $i < $fileCount; $i++) {
-            if ($_FILES['images']['error'][$i] === UPLOAD_ERR_OK) {
-                $tmpName = $_FILES['images']['tmp_name'][$i];
-                $name    = basename($_FILES['images']['name'][$i]);
-                
-                // Güvenli dosya adı oluştur
-                $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-                if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) continue;
-
-                $newName = uniqid("prop_{$propertyId}_") . '.' . $ext;
-                $targetFile = $uploadDir . $newName;
-
-                if (move_uploaded_file($tmpName, $targetFile)) {
-                    // public altındaki path'i veritabanına kaydet (/uploads/properties/abc.jpg)
-                    $imageModel->addImage($propertyId, '/uploads/properties/' . $newName);
+            if ($_FILES['images']['error'][$i] !== UPLOAD_ERR_OK) {
+                if ($_FILES['images']['error'][$i] !== UPLOAD_ERR_NO_FILE) {
+                    $errors[] = 'Dosya ' . ($i + 1) . ': yükleme hatası kodu ' . (int) $_FILES['images']['error'][$i];
                 }
+                continue;
             }
+
+            $tmpName = $_FILES['images']['tmp_name'][$i];
+            $name = basename((string) $_FILES['images']['name'][$i]);
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if (!isset($mimeByExt[$ext])) {
+                continue;
+            }
+
+            $objectKey = 'tenant_' . $tenantId . '/prop_' . $propertyId . '_' . uniqid('', true) . '.' . $ext;
+            $result = $storage->uploadObject($tmpName, $objectKey, $mimeByExt[$ext]);
+
+            if (!empty($result['ok']) && !empty($result['publicUrl'])) {
+                if (!$imageModel->addImage($propertyId, $result['publicUrl'])) {
+                    $errors[] = 'Veritabanına kayıt eklenemedi (' . $objectKey . ').';
+                }
+            } else {
+                $errors[] = $result['error'] ?? 'Bilinmeyen Storage hatası';
+            }
+        }
+
+        if (!empty($errors)) {
+            $_SESSION['error'] = implode(' ', $errors);
         }
     }
 }

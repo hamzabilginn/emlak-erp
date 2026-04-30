@@ -64,7 +64,7 @@
                     
                     <div class="card-img-top bg-light text-center position-relative overflow-hidden" style="height: 160px; border-bottom: 2px dashed #f0f0f0;">
                         <?php if (!empty($prop['cover_image'])): ?>
-                            <img src="<?= htmlspecialchars(\web_url('/emlak/public' . $prop['cover_image'])) ?>"
+                            <img src="<?= htmlspecialchars(\property_image_url((string) $prop['cover_image'])) ?>"
                                  alt=""
                                  class="w-100 h-100"
                                  style="object-fit: cover;">

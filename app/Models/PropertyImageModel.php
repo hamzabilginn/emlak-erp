@@ -83,20 +83,36 @@ class PropertyImageModel extends BaseModel {
             // Veritabanından sil
             $stmtDel = $this->db->prepare("DELETE FROM {$this->table} WHERE id = :id");
             $deleted = $stmtDel->execute([':id' => $imageId]);
-            
+
             if ($deleted) {
-                // Dosyayı sunucudan sil (Emlak köküne göre)
-                $filePath = __DIR__ . '/../../public/' . ltrim($img['image_path'], '/');
-                if (file_exists($filePath)) {
-                    @unlink($filePath);
+                $path = (string) ($img['image_path'] ?? '');
+                if (preg_match('#^https?://#i', $path) === 1) {
+                    $storage = new \App\Services\SupabaseStorageClient();
+                    if ($storage->isConfigured()) {
+                        $storage->deleteObjectByPublicUrl($path);
+                    }
+                } else {
+                    $filePath = __DIR__ . '/../../public/' . ltrim($path, '/');
+                    if (is_file($filePath)) {
+                        @unlink($filePath);
+                    }
                 }
-                
-                // Eğer sildiğimiz cover ise, kalanlardan herhangi birini cover yap
-                if ($img['is_cover']) {
-                    $stmtNext = $this->db->prepare("UPDATE {$this->table} SET is_cover = TRUE WHERE property_id = :pid LIMIT 1");
-                    $stmtNext->execute([':pid' => $propertyId]);
+
+                // Eğer sildiğimiz cover ise, kalanların il mini kapak yap
+                if (!empty($img['is_cover'])) {
+                    $this->db->prepare("UPDATE {$this->table} SET is_cover = FALSE WHERE property_id = :pid")
+                        ->execute([':pid' => $propertyId]);
+                    $stmtPick = $this->db->prepare(
+                        "SELECT id FROM {$this->table} WHERE property_id = :pid ORDER BY id ASC LIMIT 1"
+                    );
+                    $stmtPick->execute([':pid' => $propertyId]);
+                    $nextId = $stmtPick->fetchColumn();
+                    if ($nextId !== false && $nextId !== null) {
+                        $this->db->prepare("UPDATE {$this->table} SET is_cover = TRUE WHERE id = :id")
+                            ->execute([':id' => $nextId]);
+                    }
                 }
-                
+
                 return true;
             }
         }

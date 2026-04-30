@@ -130,7 +130,7 @@
                                                         <!-- Kapak Resmi -->
                             <?php if (!empty($p['cover_image'])): ?>
                                 <div style="height: 200px; overflow: hidden;">
-                                    <img src="<?= htmlspecialchars(\web_url('/emlak/public' . $p['cover_image'])) ?>" class="card-img-top" alt="İlan Kapağı" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="<?= htmlspecialchars(\property_image_url((string) $p['cover_image'])) ?>" class="card-img-top" alt="İlan Kapağı" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                             <?php else: ?>
                                 <div class="card-img-placeholder">
