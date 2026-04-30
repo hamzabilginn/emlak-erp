@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Doğrudan /emlak/ klasörüne girildiğinde public/'e yönlendirir.
+    # Böylece URL daha temiz görünür, ancak şu an public/ yazdığınız yapıyı da bozmaz.
+    RewriteRule ^$ public/ [L]
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

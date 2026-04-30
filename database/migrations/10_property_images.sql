@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS property_images (
+    id SERIAL PRIMARY KEY,
+    property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
+    image_path VARCHAR(255) NOT NULL,
+    is_cover BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
