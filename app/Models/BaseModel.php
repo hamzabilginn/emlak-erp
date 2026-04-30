@@ -34,6 +34,8 @@ abstract class BaseModel {
         }
         return (int) $_SESSION['tenant_id'];
     }
+    
+
 
     /**
      * İlgili tenant'a ait tüm kayıtları getirir.
