@@ -6,10 +6,15 @@
 
 require_once __DIR__ . '/../config/Database.php';
 
-use Config\Database;
+// String FQCN: IDE (Intelephense P1009) uyumu; PHP 8+ $class::statikCagri desteklenir
+$dbClass = 'Config\\Database';
 
 try {
-    $db = Database::getInstance()->getConnection();
+    $db = $dbClass::getInstance()->getConnection();
+    if (!$db instanceof \PDO) {
+        fwrite(STDERR, "Veritabanı PDO bağlantısı alınamadı.\n");
+        exit(1);
+    }
     echo "Veritabanı bağlantısı başarılı!\n";
     echo "Test verileri ekleniyor...\n";
     echo str_repeat("-", 40) . "\n";

@@ -25,6 +25,19 @@ define('APP_WEB_BASE', ($__scriptDir === '/' || $__scriptDir === '.') ? '' : rtr
 
 require_once BASE_PATH . '/config/url.php';
 
+// Config\Database: autoload ÖNCESI yükle (Render/Linux'ta Database.php vs database.php büyük-küçük harf farkı)
+foreach (
+    [
+        BASE_PATH . '/config/Database.php',
+        BASE_PATH . '/config/database.php',
+    ] as $__dbBootstrap
+) {
+    if (is_readable($__dbBootstrap)) {
+        require_once $__dbBootstrap;
+        break;
+    }
+}
+
 // Basit Autoloader (Composer kullanmadan kendi sınıflarımızı yüklemek için)
 spl_autoload_register(function ($class) {
     $class = ltrim((string) $class, '\\');
@@ -34,6 +47,10 @@ spl_autoload_register(function ($class) {
     $rel = preg_replace('#^Config/#', 'config/', $rel);
     $rel = preg_replace('#^Models/#', 'app/Models/', $rel);
     $file = BASE_PATH . '/' . $rel;
+
+    if (!is_readable($file) && $class === 'Config\Database') {
+        $file = BASE_PATH . '/config/database.php';
+    }
 
     if (is_readable($file)) {
         require_once $file;

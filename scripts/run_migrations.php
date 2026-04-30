@@ -7,10 +7,14 @@
 
 require_once __DIR__ . '/../config/Database.php';
 
-use Config\Database;
+$dbClass = 'Config\\Database';
 
 try {
-    $db = Database::getInstance()->getConnection();
+    $db = $dbClass::getInstance()->getConnection();
+    if (!$db instanceof \PDO) {
+        fwrite(STDERR, "Veritabanı PDO bağlantısı alınamadı.\n");
+        exit(1);
+    }
     echo "Veritabanı bağlantısı başarılı!\n";
     echo "Migration işlemleri başlatılıyor...\n";
     echo str_repeat("-", 40) . "\n";

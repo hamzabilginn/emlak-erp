@@ -1,0 +1,10 @@
+{
+  "name": "emlak/erp",
+  "description": "Emlak ERP — PSR-4 autoload IDE (Intelephense/PhpStorm) için",
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/",
+      "Config\\": "config/"
+    }
+  }
+}
