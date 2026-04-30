@@ -18,15 +18,15 @@ require_once BASE_PATH . '/config/url.php';
 
 // Basit Autoloader (Composer kullanmadan kendi sınıflarımızı yüklemek için)
 spl_autoload_register(function ($class) {
-    // Namespace'i dosya yoluna çeviriyoruz (Örn: App\Controllers\DashboardController -> app/Controllers/DashboardController.php)
+    // Baştaki namespace ayiricilari kaldir; yoksa "/App/..." olur ve Linux'ta app/ ile eslesmez
+    $class = ltrim($class, '\\');
     $file = BASE_PATH . '/' . str_replace('\\', '/', $class) . '.php';
-    
-    // Klasör isimlerini küçük harfe dönüştürerek standartlaştırıyoruz (App -> app, Config -> config)
-    $file = preg_replace('/^App\//', 'app/', $file);
-    $file = preg_replace('/^Config\//', 'config/', $file);
-    $file = preg_replace('/^Models\//', 'app/Models/', $file);
 
-    if (file_exists($file)) {
+    $file = preg_replace('#^App/#', 'app/', $file);
+    $file = preg_replace('#^Config/#', 'config/', $file);
+    $file = preg_replace('#^Models/#', 'app/Models/', $file);
+
+    if (is_readable($file)) {
         require_once $file;
     }
 });
