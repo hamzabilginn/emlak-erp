@@ -9,7 +9,7 @@ use PDO;
  * SaaS Koruması: Bütün CRUD işlemlerinde (Insert, Select, Update, Delete) o an oturum açmış kullanıcının
  * $_SESSION['tenant_id'] verisi zorunlu olarak koşullara eklenir. Böylece dükkanlar birbirlerinin verisini göremez.
  */
-<?php
+
 
 namespace App\Models;
 
