@@ -58,7 +58,7 @@ class ViewingController extends BaseController {
             'property_id'  => (int) $_POST['property_id'],
             'viewing_date' => $_POST['viewing_date'],  // Date string yollanacak örn: 2026-04-01 14:00
             'status'       => 'Bekliyor',
-            'notes'        => trim(filter_input(INPUT_POST, 'notes', FILTER_SANITIZE_STRING) ?? '')
+            'notes'        => trim((string) ($_POST['notes'] ?? ''))
         ];
 
         $model = new ViewingModel();

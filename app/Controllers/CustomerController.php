@@ -44,11 +44,11 @@ class CustomerController extends BaseController {
             return;
         }
 
-        $type = filter_input(INPUT_POST, 'type', FILTER_SANITIZE_STRING) ?? 'buyer';
+        $type = trim((string) ($_POST['type'] ?? 'buyer'));
 
         $data = [
-            'name'  => trim(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING)),
-            'phone' => trim(filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING)),
+            'name'  => trim((string) ($_POST['name'] ?? '')),
+            'phone' => trim((string) ($_POST['phone'] ?? '')),
             'type'  => $type
         ];
 

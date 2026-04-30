@@ -56,13 +56,13 @@ class PropertyController extends BaseController {
 
         $model = new PropertyModel();
 
-        // 1. Standart Verileri Yakala (Ve basic tip atamaları yap)
+        // 1. Standart Verileri Yakala (PHP 8.1+ FILTER_SANITIZE_STRING kaldırıldı; PDO ile güvenli kayıt)
         $data = [
-            'title'    => filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING) ?? '',
-            'category' => filter_input(INPUT_POST, 'category', FILTER_SANITIZE_STRING) ?? 'residential',
-            'status'   => filter_input(INPUT_POST, 'status', FILTER_SANITIZE_STRING) ?? 'for_sale',
-            'city'     => filter_input(INPUT_POST, 'city', FILTER_SANITIZE_STRING) ?? '',
-            'district' => filter_input(INPUT_POST, 'district', FILTER_SANITIZE_STRING) ?? '',
+            'title'    => trim((string) ($_POST['title'] ?? '')),
+            'category' => trim((string) ($_POST['category'] ?? 'residential')),
+            'status'   => trim((string) ($_POST['status'] ?? 'for_sale')),
+            'city'     => trim((string) ($_POST['city'] ?? '')),
+            'district' => trim((string) ($_POST['district'] ?? '')),
             'price'    => (float) ($_POST['price'] ?? 0),
             'is_shared_pool' => isset($_POST['is_shared_pool']) ? 1 : 0,
             'key_status' => htmlspecialchars(trim($_POST['key_status'] ?? 'Bizde')),
@@ -124,15 +124,15 @@ class PropertyController extends BaseController {
         
         // Form Verileri (Gelişmiş filter eklenebilir)
         $data = [
-            'title'    => $_POST['title'] ?? '',
-            'category' => $_POST['category'] ?? 'residential',
-            'status'   => $_POST['status'] ?? 'for_sale',
-            'city'     => $_POST['city'] ?? '',
-            'district' => $_POST['district'] ?? '',
+            'title'    => trim((string) ($_POST['title'] ?? '')),
+            'category' => trim((string) ($_POST['category'] ?? 'residential')),
+            'status'   => trim((string) ($_POST['status'] ?? 'for_sale')),
+            'city'     => trim((string) ($_POST['city'] ?? '')),
+            'district' => trim((string) ($_POST['district'] ?? '')),
             'price'    => (float) ($_POST['price'] ?? 0),
             'is_shared_pool' => isset($_POST['is_shared_pool']) ? 1 : 0,
-            'key_status' => $_POST['key_status'] ?? 'Bizde',
-            'key_number' => $_POST['key_number'] ?? ''
+            'key_status' => trim((string) ($_POST['key_status'] ?? 'Bizde')),
+            'key_number' => trim((string) ($_POST['key_number'] ?? ''))
         ];
 
         $detailsArray = $_POST['details'] ?? [];
