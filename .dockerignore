@@ -1,0 +1,9 @@
+# Hassas veri — imajda olmamalı; Render’da Environment ile tanımlayın
+.env
+.env.*
+
+# Git geçmişi
+.git
+
+# Bağımlılık klasörü (composer kullanılırsa)
+vendor
