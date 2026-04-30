@@ -7,8 +7,17 @@ error_reporting(E_ALL);
 // Session başlatma
 session_start();
 
-// Temel Dizin Tanımlaması
-define('BASE_PATH', dirname(__DIR__));
+// Temel Dizin Tanımlaması (Linux'ta DOCUMENT_ROOT = .../public ise yedek yol)
+$__base = dirname(__DIR__);
+$__dash = $__base . '/app/Controllers/DashboardController.php';
+if (!is_readable($__dash) && !empty($_SERVER['DOCUMENT_ROOT'])) {
+    $__doc = rtrim(str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']), '/');
+    $__alt = dirname($__doc);
+    if ($__alt !== '/' && is_readable($__alt . '/app/Controllers/DashboardController.php')) {
+        $__base = $__alt;
+    }
+}
+define('BASE_PATH', $__base);
 
 // Web kökü: Render’da /index.php → ''; XAMPP’ta /emlak/public
 $__scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
@@ -18,13 +27,13 @@ require_once BASE_PATH . '/config/url.php';
 
 // Basit Autoloader (Composer kullanmadan kendi sınıflarımızı yüklemek için)
 spl_autoload_register(function ($class) {
-    // Baştaki namespace ayiricilari kaldir; yoksa "/App/..." olur ve Linux'ta app/ ile eslesmez
-    $class = ltrim($class, '\\');
-    $file = BASE_PATH . '/' . str_replace('\\', '/', $class) . '.php';
-
-    $file = preg_replace('#^App/#', 'app/', $file);
-    $file = preg_replace('#^Config/#', 'config/', $file);
-    $file = preg_replace('#^Models/#', 'app/Models/', $file);
+    $class = ltrim((string) $class, '\\');
+    $rel = str_replace('\\', '/', $class) . '.php';
+    // Önemli: preg_replace sadece göreli yolda — BASE_PATH . '/App/...' ile ^App/ asla eşleşmezdi
+    $rel = preg_replace('#^App/#', 'app/', $rel);
+    $rel = preg_replace('#^Config/#', 'config/', $rel);
+    $rel = preg_replace('#^Models/#', 'app/Models/', $rel);
+    $file = BASE_PATH . '/' . $rel;
 
     if (is_readable($file)) {
         require_once $file;

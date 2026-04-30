@@ -4,7 +4,7 @@
  * PostgreSQL veritabanımızı sahte (mock) ama kullanışlı "Tenant" ve "User" verileriyle doldurur.
  */
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/Database.php';
 
 use Config\Database;
 

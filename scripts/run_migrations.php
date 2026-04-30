@@ -5,7 +5,7 @@
  * ve sırasıyla "Database" bağlantısını kullanarak veritabanında çalıştırır.
  */
 
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/Database.php';
 
 use Config\Database;
 
