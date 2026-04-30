@@ -14,28 +14,34 @@ use PDO;
 namespace App\Models;
 
 use PDO;
+use Exception;
 
-class BaseModel {
-    protected $db;
+abstract class BaseModel {
+    protected ?PDO $db;
+    protected string $table = ''; // Modelin işlem yapacağı tablo adı
 
     public function __construct() {
-        $config = require __DIR__ . '/../../config/database.php';
-        $dsn = "pgsql:host={$config['host']};port={$config['port']};dbname={$config['dbname']}";
-        $this->db = new PDO($dsn, $config['user'], $config['password'], [
-            PDO::ATTR_ERRMODE => PDO::REPORT_STRICT, // Error mode'u kesinleştir
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
+        // Veritabanı bağlantısını Core altındaki Database sınıfından alıyoruz
+        $this->db = \App\Core\Database::getInstance()->getConnection();
     }
 
     /**
-     * Veritabanı bağlantısını döndürür
-     * @return PDO
+     * PDO bağlantısını geri döner.
      */
-    public function getDb() {
+    public function getDb(): ?PDO {
         return $this->db;
     }
+
+    /**
+     * Güvenlik Kontrolü: Aktif dükkan (tenant) kimliğini döndürür.
+     */
+    protected function getTenantId(): int {
+        if (!isset($_SESSION['tenant_id']) || empty($_SESSION['tenant_id'])) {
+            throw new Exception("Güvenlik İhlali: Aktif dükkan (tenant) kimliği bulunamadı!");
+        }
+        return (int) $_SESSION['tenant_id'];
+    }
 }
-    
 
 
     /**
