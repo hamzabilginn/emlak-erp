@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var array<string, mixed> $doc
+ */
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>

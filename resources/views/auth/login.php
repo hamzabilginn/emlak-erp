@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string|null $pageTitle
+ */
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -54,8 +59,7 @@
     <?php endif; ?>
 
     <!-- Giriş Formu -->
-    <form action="/emlak/public/auth/authenticate" method="POST">
-        <!-- Not: URL yapısı router ayarlarınıza göre değişebilir, /emlak/public/ dizinine göre güncellendi. -->
+    <form action="<?= htmlspecialchars(\web_url('/emlak/public/auth/authenticate')) ?>" method="POST">
         <div class="mb-3">
             <label for="email" class="form-label text-muted fw-bold">E-Posta Adresi</label>
             <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="ornek@ofis.com" required autofocus>

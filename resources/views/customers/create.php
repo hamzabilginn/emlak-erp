@@ -1,9 +1,14 @@
+<?php
+/**
+ * @var string $pageTitle
+ */
+?>
 <div class="content-header">
     <div>
         <h2 class="mb-0">Yeni CRM Müşterisi Oluştur (Adayı Arayın)</h2>
         <span class="text-muted">Aşağıdaki formu doldurup akıllı eşleşme verilerine göre bütçesine sadık müşteriyi kaydedebilirsiniz.</span>
     </div>
-    <a href="/emlak/public/customer/index" class="btn btn-outline-secondary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/customer/index')) ?>" class="btn btn-outline-secondary d-flex align-items-center">
         <i class="bi bi-arrow-left " style="margin-right:0.5rem;"></i> Tüm Müşteriler Rehberine Dön
     </a>
 </div>
@@ -11,7 +16,7 @@
 <div class="card shadow-sm border-0 rounded-3 mb-5">
     <div class="card-body p-4">
         <!-- CRM (Müşteri) Ekleme Yolu (POST) -->
-        <form action="/emlak/public/customer/store" method="POST">
+        <form action="<?= htmlspecialchars(\web_url('/emlak/public/customer/store')) ?>" method="POST">
 
             <!-- BÖLÜM 1: TEMEL KİMLİK (Sabit Kısımlar) -->
             <h5 class="text-warning text-dark border-bottom pb-2 mb-4">

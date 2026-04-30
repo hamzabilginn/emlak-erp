@@ -1,3 +1,11 @@
+<?php
+/**
+ * @var array<string, mixed> $property
+ * @var list<array<string, mixed>> $images
+ * @var int $tenantId
+ * @var string $tenantName
+ */
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -23,7 +31,7 @@
         <div>
             <h4 class="mb-0"><i class="bi bi-buildings text-primary"></i> <?= htmlspecialchars($tenantName) ?></h4>
         </div>
-        <a href="/emlak/public/showcase?tenant=<?= $tenantId ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Vitrine Dön</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase') . '?tenant=' . (int) $tenantId) ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Vitrine Dön</a>
     </div>
 </header>
 
@@ -36,7 +44,7 @@
                 <div class="carousel-inner">
                     <?php foreach ($images as $index => $img): ?>
                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                        <img src="/emlak/public<?= htmlspecialchars($img['image_path']) ?>" class="d-block w-100" alt="İlan Fotoğrafı">
+                        <img src="<?= htmlspecialchars(\web_url('/emlak/public' . $img['image_path'])) ?>" class="d-block w-100" alt="İlan Fotoğrafı">
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -115,7 +123,7 @@
             <div class="match-form">
                 <h5 class="fw-bold"><i class="bi bi-chat-dots"></i> İlanla İlgileniyorum</h5>
                 <p class="text-sm text-muted">Bilgilerinizi bırakın, emlak ofisimiz size ulaşsın.</p>
-                <form action="/emlak/public/showcase/lead/<?= $property['id'] ?>" method="POST">
+                <form action="<?= htmlspecialchars(\web_url('/emlak/public/showcase/lead/' . $property['id'])) ?>" method="POST">
                     <input type="hidden" name="tenant_id" value="<?= $tenantId ?>">
                     <div class="mb-3">
                         <label class="form-label">Adınız Soyadınız</label>

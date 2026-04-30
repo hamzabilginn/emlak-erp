@@ -1,9 +1,15 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var list<array<string, mixed>> $viewings
+ */
+?>
 <div class="content-header">
     <div>
         <h2 class="mb-0">Ajanda & Yer Gösterme Takibi</h2>
         <span class="text-muted">Göstermek için sözleştiğiniz müşterilerin kayıtları ve resmi imzalı belgeleri buradan yönetilir.</span>
     </div>
-    <a href="/emlak/public/viewing/create" class="btn btn-primary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/viewing/create')) ?>" class="btn btn-primary d-flex align-items-center">
         <i class="bi bi-calendar-plus me-2 fs-5"></i> Yeni Randevu Planla
     </a>
 </div>
@@ -58,7 +64,7 @@
                                 <td class="text-end pe-4">
                                     
                                     <!-- Resmi Evrak Çıktısı -->
-                                    <a href="/emlak/public/viewing/printDocument/<?= $v['id'] ?>" target="_blank" class="btn btn-sm btn-outline-dark me-2" title="Resmi A4 Yer Gösterme Matbu Evrağı">
+                                    <a href="<?= htmlspecialchars(\web_url('/emlak/public/viewing/printDocument/' . $v['id'])) ?>" target="_blank" class="btn btn-sm btn-outline-dark me-2" title="Resmi A4 Yer Gösterme Matbu Evrağı">
                                         <i class="bi bi-printer-fill fs-6 text-dark pe-1"></i> Belge Yazdır
                                     </a>
 

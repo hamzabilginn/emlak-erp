@@ -10,6 +10,12 @@ session_start();
 // Temel Dizin Tanımlaması
 define('BASE_PATH', dirname(__DIR__));
 
+// Web kökü: Render’da /index.php → ''; XAMPP’ta /emlak/public
+$__scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+define('APP_WEB_BASE', ($__scriptDir === '/' || $__scriptDir === '.') ? '' : rtrim($__scriptDir, '/'));
+
+require_once BASE_PATH . '/config/url.php';
+
 // Basit Autoloader (Composer kullanmadan kendi sınıflarımızı yüklemek için)
 spl_autoload_register(function ($class) {
     // Namespace'i dosya yoluna çeviriyoruz (Örn: App\Controllers\HomeController -> app/Controllers/HomeController.php)

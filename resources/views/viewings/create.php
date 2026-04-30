@@ -1,9 +1,16 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var list<array<string, mixed>> $customers
+ * @var list<array<string, mixed>> $properties
+ */
+?>
 <div class="content-header">
     <div>
         <h2 class="mb-0">Yeni Yer Gösterme Ajandası</h2>
         <span class="text-muted">Ofisinizin İlanları ile Alıcı/Kiracı Müşterinizi anında eşleştirin. Randevu oluşturun.</span>
     </div>
-    <a href="/emlak/public/viewing/index" class="btn btn-outline-secondary d-flex align-items-center mt-3 mt-md-0">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/viewing/index')) ?>" class="btn btn-outline-secondary d-flex align-items-center mt-3 mt-md-0">
         <i class="bi bi-arrow-left me-2"></i> Ajandaya Geri Dön
     </a>
 </div>
@@ -11,7 +18,7 @@
 <div class="card shadow-sm border-0 rounded-3 mb-5">
     <div class="card-body p-4">
         <!-- Ekleme Yolu -->
-        <form action="/emlak/public/viewing/store" method="POST">
+        <form action="<?= htmlspecialchars(\web_url('/emlak/public/viewing/store')) ?>" method="POST">
 
             <!-- BÖLÜM: Kişi ve İlan Seçme -->
             <h5 class="text-primary border-bottom pb-2 mb-4">

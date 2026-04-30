@@ -1,10 +1,17 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var list<array<string, mixed>> $properties
+ * @var list<array<string, mixed>> $customers
+ */
+?>
 <!-- Üst Araç Çubuğu ve Buton -->
 <div class="content-header">
     <div>
         <h2 class="mb-0">Portföy (İlan) Yönetimi</h2>
         <span class="text-muted">Bütün ofis mülklerinizi tek noktadan görün.</span>
     </div>
-    <a href="/emlak/public/property/create" class="btn btn-primary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/create')) ?>" class="btn btn-primary d-flex align-items-center">
         <i class="bi bi-plus-lg me-2"></i> Yeni İlan Ekle
     </a>
 </div>
@@ -72,11 +79,11 @@
                                     <span class="text-success fw-bold"><?= number_format($prop['price'], 2, ',', '.') ?> ₺</span>
                                 </td>
                                 <td class="text-end pe-4">
-                                    <a href="/emlak/public/portfoy-duzenle/<?= $prop['id'] ?>" class="btn btn-sm btn-outline-secondary rounded-circle" title="Detay">
+                                    <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-duzenle/' . $prop['id'])) ?>" class="btn btn-sm btn-outline-secondary rounded-circle" title="Detay">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                     <!-- Düzenle ve Sil İkon Alanları -->
-                                    <a href="/emlak/public/portfoy-duzenle/<?= $prop['id'] ?>" class="btn btn-sm btn-outline-primary rounded-circle ms-1" title="Düzenle">
+                                    <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-duzenle/' . $prop['id'])) ?>" class="btn btn-sm btn-outline-primary rounded-circle ms-1" title="Düzenle">
                                         <i class="bi bi-pencil"></i>
                                     </a>
                                     
@@ -90,7 +97,7 @@
                                         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
                                         $hostUrl = $protocol . $_SERVER['HTTP_HOST'];
                                         $tenantRef = $_SESSION['tenant_id'] ?? 0;
-                                        $propLink = "{$hostUrl}/emlak/public/showcase/show/{$prop['id']}?tenant={$tenantRef}";
+                                        $propLink = $hostUrl . \web_url('/emlak/public/showcase/show/' . $prop['id']) . '?tenant=' . urlencode((string) $tenantRef);
 
                                         $whatsappText = rawurlencode("Merhaba, ilgilendiğiniz {$waDistrict} {$waRooms}{$waTitle} ilanımızın fotoğraflı detaylarına buradan bakabilirsiniz: {$propLink}");
                                     ?>
@@ -125,7 +132,7 @@
 <!-- "İşi Bağla" (Deal Closing) Sihirbazı Modal -->
 <div class="modal fade" id="dealModal" tabindex="-1" aria-labelledby="dealModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <form action="/emlak/public/deal/store" method="POST" class="modal-content border-top-warning" style="border-top: .35rem solid #ffc107;">
+        <form action="<?= htmlspecialchars(\web_url('/emlak/public/deal/store')) ?>" method="POST" class="modal-content border-top-warning" style="border-top: .35rem solid #ffc107;">
             <div class="modal-header bg-light">
                 <h5 class="modal-title fw-bold text-dark" id="dealModalLabel">
                     <i class="bi bi-heptagon-half text-warning me-2"></i> İşi Bağla (Satış / Kiralama)

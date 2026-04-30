@@ -1,9 +1,15 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var list<array<string, mixed>> $customers
+ */
+?>
 <div class="content-header">
     <div>
         <h2 class="mb-0">Müşteri (CRM) Rehberi</h2>
         <span class="text-muted">Portföyünüzle ilgilenen Tüm Alıcı, Satıcı ve Kiracıları tek merkezden yönetip takip edin.</span>
     </div>
-    <a href="/emlak/public/customer/create" class="btn btn-warning d-flex align-items-center text-dark">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/customer/create')) ?>" class="btn btn-warning d-flex align-items-center text-dark">
         <i class="bi bi-person-plus-fill me-2 fs-5"></i> Yeni Müşteri Rehbere Ekle
     </a>
 </div>
@@ -55,7 +61,7 @@
                                 <td class="text-end pe-4">
                                     <!-- Sadece "Alıcı(buyer)" ve "Kiracı(tenant)" ise 'Akıllı Eşleştirme' Butonunu Gösteririz -->
                                     <?php if ($c['type'] === 'buyer' || $c['type'] === 'tenant'): ?>
-                                        <a href="/emlak/public/customer/match/<?= $c['id'] ?>" class="btn btn-sm btn-outline-warning border-warning shadow-sm rounded text-dark fw-semibold" title="Bütçesine Uygun Olan Evleri Bul!">
+                                        <a href="<?= htmlspecialchars(\web_url('/emlak/public/customer/match/' . $c['id'])) ?>" class="btn btn-sm btn-outline-warning border-warning shadow-sm rounded text-dark fw-semibold" title="Bütçesine Uygun Olan Evleri Bul!">
                                             🔍 Uygun İlanları Bul
                                         </a>
                                     <?php else: ?>

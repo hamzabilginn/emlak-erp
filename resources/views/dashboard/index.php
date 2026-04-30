@@ -1,3 +1,14 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var list<array<string, mixed>> $tasks
+ * @var int|string|false $totalActiveProperties
+ * @var int|string|false $totalCustomers
+ * @var int|string|false $pendingMatches
+ * @var int|string|false $weeklyViewings
+ * @var list<array<string, mixed>> $upcomingViewings
+ */
+?>
 <div class="container-fluid">
     <div class="row mb-4 align-items-center">
         <div class="col">
@@ -5,10 +16,10 @@
             <p class="text-muted">Acente istatistikleriniz ve yaklaşan randevularınız.</p>
         </div>
         <div class="col-auto">
-            <a href="<?= htmlspecialchars('/emlak/public/yer-gosterme-ekle') ?>" class="btn btn-primary shadow-sm">
+            <a href="<?= htmlspecialchars(\web_url('/emlak/public/yer-gosterme-ekle')) ?>" class="btn btn-primary shadow-sm">
                 <i class="bi bi-calendar-plus me-1"></i> Yeni Yer Gösterme Planla
             </a>
-            <a href="<?= htmlspecialchars('/emlak/public/portfoy-ekle') ?>" class="btn btn-success shadow-sm">
+            <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-ekle')) ?>" class="btn btn-success shadow-sm">
                 <i class="bi bi-house-add me-1"></i> Yeni İlan Ekle
             </a>
         </div>
@@ -96,7 +107,7 @@
             <div class="card shadow h-100">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary"><i class="bi bi-clock-history me-1"></i> Yaklaşan Yer Gösterme Kayıtları</h6>
-                    <a href="<?= htmlspecialchars('/emlak/public/yer-gosterme') ?>" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
+                    <a href="<?= htmlspecialchars(\web_url('/emlak/public/yer-gosterme')) ?>" class="btn btn-sm btn-outline-primary">Tümünü Gör</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -136,7 +147,7 @@
                                                 <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> Bekliyor</span>
                                             </td>
                                             <td>
-                                                <a href="/emlak/public/viewing/edit/<?= $viewing['id'] ?>" class="btn btn-sm btn-light border" title="Detay / Güncelle">
+                                                <a href="<?= htmlspecialchars(\web_url('/emlak/public/viewing/edit/' . $viewing['id'])) ?>" class="btn btn-sm btn-light border" title="Detay / Güncelle">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                             </td>
@@ -202,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function() {
             data.append("description", descInput.value);
             data.append("task_date", dateInput.value);
 
-            fetch("/emlak/public/ana-pano/addTask", {
+            fetch(<?= json_encode(\web_url('/emlak/public/dashboard/addTask')) ?>, {
                 method: "POST",
                 body: data
             }).then(res => res.json()).then(res => {
@@ -251,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function() {
             fd.append("id", taskId);
             fd.append("is_completed", isCompleted);
 
-            fetch("/emlak/public/ana-pano/completeTask", {
+            fetch(<?= json_encode(\web_url('/emlak/public/dashboard/completeTask')) ?>, {
                 method: "POST",
                 body: fd
             });

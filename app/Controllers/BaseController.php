@@ -55,9 +55,7 @@ abstract class BaseController {
      * @param string $url Örn: '/public/dashboard' veya 'https://example.com'
      */
     protected function redirect(string $url): void {
-        // İlgili yapı framework olmadığı için public dizinini de dikkate alıyor
-        // Not: Eğer .htaccess ile public route yönlendirmesi tam sağlanmışsa $url yeterlidir.
-        header("Location: " . $url);
-        exit(); // header işleminden sonra kodun devam etmesini (arka planda çalışmasını) kesin olarak kes.
+        header('Location: ' . \web_url($url));
+        exit();
     }
 }

@@ -1,4 +1,12 @@
-﻿<!DOCTYPE html>
+﻿<?php
+/**
+ * Ana şablon (BaseController::render ile gömülü içerik).
+ *
+ * @var string|null $content
+ * @var string|null $pageTitle
+ */
+?>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -86,25 +94,25 @@
             Hoş Geldiniz, <br><strong class="text-white"><?= htmlspecialchars($_SESSION['name'] ?? 'Misafir') ?></strong>
         </div>
 
-        <a href="/emlak/public/ana-pano"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a href="/emlak/public/portfoyler"><i class="bi bi-house"></i> Portföyler</a>
-        <a href="/emlak/public/musteriler"><i class="bi bi-people"></i> Müşteriler</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/ana-pano')) ?>"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoyler')) ?>"><i class="bi bi-house"></i> Portföyler</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/musteriler')) ?>"><i class="bi bi-people"></i> Müşteriler</a>
         <hr class="border-secondary mx-3 my-2" style="opacity:0.3;">
-        <a href="/emlak/public/yer-gosterme"><i class="bi bi-calendar-event"></i> Yer Gösterme</a>
-        <a href="/emlak/public/ortak-havuz"><i class="bi bi-globe"></i> Ortak Havuz</a>
-        <a href="/emlak/public/esnaf-kasasi" class="text-warning"><i class="bi bi-cash-stack"></i> Esnaf Kasası</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/yer-gosterme')) ?>"><i class="bi bi-calendar-event"></i> Yer Gösterme</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/ortak-havuz')) ?>"><i class="bi bi-globe"></i> Ortak Havuz</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/esnaf-kasasi')) ?>" class="text-warning"><i class="bi bi-cash-stack"></i> Esnaf Kasası</a>
                 <?php
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
             $hostUrl = $protocol . $_SERVER['HTTP_HOST'];
             $tenantRef = $_SESSION['tenant_id'] ?? 0;
-            $showcaseLink = "{$hostUrl}/emlak/public/showcase?tenant={$tenantRef}";
+            $showcaseLink = $hostUrl . \web_url('/emlak/public/showcase') . '?tenant=' . urlencode((string) $tenantRef);
             $waVitrinText = "Merhaba, ofisimizin tüm güncel ve detaylı ilan portföyüne şu linkten ulaşabilirsiniz: {$showcaseLink}";
         ?>
         <a href="https://wa.me/?text=<?= rawurlencode($waVitrinText) ?>" target="_blank" class="text-success fw-bold"><i class="bi bi-whatsapp"></i> Vitrini WhatsApp'ta Paylaş</a>
 
         <!-- Boşluk yaratmak için mt-auto kullanarak diğerlerini yukarı sıkıştırır -->
         <div class="mt-auto">
-            <a href="/emlak/public/cikis-yap" class="text-danger border-top border-secondary py-3">
+            <a href="<?= htmlspecialchars(\web_url('/emlak/public/cikis-yap')) ?>" class="text-danger border-top border-secondary py-3">
                 <i class="bi bi-box-arrow-left"></i> Çıkış Yap
             </a>
         </div>

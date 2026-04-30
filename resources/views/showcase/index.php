@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var int $tenantId
+ * @var string $tenantName
+ * @var list<array<string, mixed>> $properties
+ */
+?>
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -122,7 +129,7 @@
                                                         <!-- Kapak Resmi -->
                             <?php if (!empty($p['cover_image'])): ?>
                                 <div style="height: 200px; overflow: hidden;">
-                                    <img src="/emlak/public<?= htmlspecialchars($p['cover_image']) ?>" class="card-img-top" alt="İlan Kapağı" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="<?= htmlspecialchars(\web_url('/emlak/public' . $p['cover_image'])) ?>" class="card-img-top" alt="İlan Kapağı" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                             <?php else: ?>
                                 <div class="card-img-placeholder">
@@ -144,7 +151,7 @@
                                 <div class="price-tag">
                                     <?= number_format((float)$p['price'], 0, ',', '.') ?> TL
                                 </div>
-                                <a href="/emlak/public/showcase/show/<?= $p['id'] ?>?tenant=<?= $tenantId ?>" class="btn btn-outline-primary btn-sm mt-3 fw-bold w-100"><i class="bi bi-eye"></i> İlan Detayını İncele</a>
+                                <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase/show/' . $p['id']) . '?tenant=' . (int) $tenantId) ?>" class="btn btn-outline-primary btn-sm mt-3 fw-bold w-100"><i class="bi bi-eye"></i> İlan Detayını İncele</a>
 
                                 <div class="property-details mt-3 mb-2">
                                     <div class="row g-2">

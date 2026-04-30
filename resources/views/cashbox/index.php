@@ -1,3 +1,12 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var float|int $monthlyIncome
+ * @var float|int $monthlyExpense
+ * @var float|int $netProfit
+ * @var list<array<string, mixed>> $transactions
+ */
+?>
 <div class="container-fluid">
     <div class="row mb-4 align-items-center">
         <div class="col">
@@ -111,7 +120,7 @@
                                         <?= $txn['type'] === 'Gelir' ? '+' : '-' ?> ₺<?= number_format($txn['amount'], 2, ',', '.') ?>
                                     </td>
                                     <td class="text-center">
-                                        <form method="POST" action="<?= htmlspecialchars('/emlak/public/cashbox/delete') ?>" class="d-inline" onsubmit="return confirm('Bu işlemi silmek istediğinize emin misiniz?');">
+                                        <form method="POST" action="<?= htmlspecialchars(\web_url('/emlak/public/cashbox/delete')) ?>" class="d-inline" onsubmit="return confirm('Bu işlemi silmek istediğinize emin misiniz?');">
                                             <input type="hidden" name="id" value="<?= htmlspecialchars((string)$txn['id']) ?>">
                                             <button type="submit" class="btn btn-sm btn-outline-secondary" title="Sil (İptal Et)">
                                                 <i class="bi bi-trash"></i>
@@ -131,7 +140,7 @@
 <!-- GELİR EKLE MODEL -->
 <div class="modal fade" id="incomeModal" tabindex="-1" aria-labelledby="incomeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form method="POST" action="<?= htmlspecialchars('/emlak/public/cashbox/store') ?>" class="modal-content border-top-success">
+        <form method="POST" action="<?= htmlspecialchars(\web_url('/emlak/public/cashbox/store')) ?>" class="modal-content border-top-success">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title" id="incomeModalLabel"><i class="bi bi-plus-circle"></i> Yeni Gelir Ekle</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
@@ -171,7 +180,7 @@
 <!-- GİDER EKLE MODEL -->
 <div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form method="POST" action="<?= htmlspecialchars('/emlak/public/cashbox/store') ?>" class="modal-content border-top-danger">
+        <form method="POST" action="<?= htmlspecialchars(\web_url('/emlak/public/cashbox/store')) ?>" class="modal-content border-top-danger">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="expenseModalLabel"><i class="bi bi-dash-circle"></i> Yeni Gider Ekle</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>

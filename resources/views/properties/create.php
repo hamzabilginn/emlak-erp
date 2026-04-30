@@ -1,10 +1,15 @@
+<?php
+/**
+ * @var string $pageTitle
+ */
+?>
 <div class="content-header">
     <div>
         <h2 class="mb-0">Yeni İlan / Portföy Ekle</h2>
         <span class="text-muted">Aşağıdaki formu doldurarak ilgili mülkü emlak ofisinize kaydedin.</span>
     </div>
     <!-- Geri dönmek İçin Küçük Bir Ok Butonu -->
-    <a href="/emlak/public/property/index" class="btn btn-outline-secondary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/index')) ?>" class="btn btn-outline-secondary d-flex align-items-center">
         <i class="bi bi-arrow-left me-2"></i> Listeye Dön
     </a>
 </div>
@@ -12,7 +17,7 @@
 <div class="card shadow-sm border-0 rounded-3 mb-5">
     <div class="card-body p-4">
         <!-- İlan Formu. Method zorunlu POST ve route "/property/store" -->
-        <form action="/emlak/public/property/store" method="POST" enctype="multipart/form-data">
+        <form action="<?= htmlspecialchars(\web_url('/emlak/public/property/store')) ?>" method="POST" enctype="multipart/form-data">
 
             <!-- 1. Bölüm: Temel Mülk Bilgileri -->
             <h5 class="text-primary border-bottom pb-2 mb-4">

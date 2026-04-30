@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $pageTitle
+ * @var list<array<string, mixed>> $sharedProperties
+ */
+?>
 <div class="row mb-4 align-items-center">
     <div class="col">
         <h1 class="h3 text-gray-800"><i class="bi bi-globe fs-2 me-2 text-primary"></i> Ortak Havuz (Paslaşma Ağı)</h1>
@@ -12,7 +18,7 @@
                 <i class="bi bi-inbox-fill fs-1 d-block mb-3"></i>
                 <h4 class="fw-bold">Şu anda ortak havuzda paylaşılmış bir ilan bulunmuyor.</h4>
                 <p>İlk paslaşma ilanını ofisinizden kendi ilanınızı ekleyerek yapmak ister misiniz?</p>
-                <a href="<?= htmlspecialchars('/emlak/public/property/create') ?>" class="btn btn-primary mt-2">Yeni İlan Ekle</a>
+                <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/create')) ?>" class="btn btn-primary mt-2">Yeni İlan Ekle</a>
             </div>
         </col-12>
     <?php else: ?>
