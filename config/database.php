@@ -235,10 +235,12 @@ class Database {
             $this->password = $parsed['password'];
             $this->sslmode = $parsed['sslmode'];
         } else {
-            $this->host = getenv('DB_HOST') ?: 'db.yzrfgshzdnicenrqxdum.supabase.co';
+            // Supabase: Doğrudan db.*.supabase.co bazen yalnızca IPv6 döner (Render’da unreachable).
+            // Dashboard’daki “Shared pooler” host’u (aws-*-*.pooler.supabase.com) IPv4 proxylüdür.
+            $this->host = getenv('DB_HOST') ?: 'aws-1-ap-southeast-2.pooler.supabase.com';
             $this->port = getenv('DB_PORT') ?: '6543';
             $this->db_name = getenv('DB_NAME') ?: 'postgres';
-            $this->username = getenv('DB_USER') ?: 'postgres';
+            $this->username = getenv('DB_USER') ?: 'postgres.yzrfgshzdnicenrqxdum';
             $this->password = getenv('DB_PASSWORD') ?: '';
             $this->sslmode = getenv('DB_SSLMODE') ?: 'require';
         }
