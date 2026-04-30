@@ -19,17 +19,9 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html/
 
-# Windows CRLF ve UTF-8 BOM .htaccess'te Apache "Invalid command" hatası verir
-RUN set -e; \
-    for f in /var/www/html/public/.htaccess /var/www/html/.htaccess; do \
-        if [ -f "$f" ]; then \
-            sed -i 's/\r$//' "$f"; \
-            first=`od -An -tx1 -N3 "$f" 2>/dev/null | tr -d ' \n' || true`; \
-            if [ "$first" = "efbbbf" ]; then \
-                tail -c +4 "$f" > "$f.nobom" && mv "$f.nobom" "$f"; \
-            fi; \
-        fi; \
-    done
+# .htaccess dosyalarındaki Windows satır sonlarını ve BOM karakterini temizle
+RUN find /var/www/html -name ".htaccess" -exec sed -i '1s/^\xef\xbb\xbf//' {} + && \
+    find /var/www/html -name ".htaccess" -exec sed -i 's/\r$//' {} +
 
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
