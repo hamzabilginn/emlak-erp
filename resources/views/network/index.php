@@ -13,14 +13,14 @@
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
     <?php if (empty($sharedProperties)): ?>
-        <col-12 class="text-center w-100 py-5">
+        <div class="col-12 text-center w-100 py-5">
             <div class="text-muted">
                 <i class="bi bi-inbox-fill fs-1 d-block mb-3"></i>
                 <h4 class="fw-bold">Şu anda ortak havuzda paylaşılmış bir ilan bulunmuyor.</h4>
                 <p>İlk paslaşma ilanını ofisinizden kendi ilanınızı ekleyerek yapmak ister misiniz?</p>
                 <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/create')) ?>" class="btn btn-primary mt-2">Yeni İlan Ekle</a>
             </div>
-        </col-12>
+        </div>
     <?php else: ?>
         <?php foreach ($sharedProperties as $prop): ?>
             <?php
@@ -61,11 +61,20 @@
                 <!-- Bootstrap Şık Kart Yapısı -->
                 <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden position-relative">
                     
-                    <div class="card-img-top bg-light p-3 text-center position-relative" style="height: 140px; border-bottom: 2px dashed #f0f0f0;">
-                         <i class="bi bi-house-door text-secondary opacity-50" style="font-size: 5rem;"></i>
-                         <div class="position-absolute top-0 end-0 m-3">
-                             <span class="badge <?= $badgeColor ?> rounded-pill fs-6 px-3 shadow-sm"><?= $statusType ?></span>
-                         </div>
+                    <div class="card-img-top bg-light text-center position-relative overflow-hidden" style="height: 160px; border-bottom: 2px dashed #f0f0f0;">
+                        <?php if (!empty($prop['cover_image'])): ?>
+                            <img src="<?= htmlspecialchars(\web_url('/emlak/public' . $prop['cover_image'])) ?>"
+                                 alt=""
+                                 class="w-100 h-100"
+                                 style="object-fit: cover;">
+                        <?php else: ?>
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <i class="bi bi-house-door text-secondary opacity-50" style="font-size: 5rem;"></i>
+                            </div>
+                        <?php endif; ?>
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge <?= $badgeColor ?> rounded-pill fs-6 px-3 shadow-sm"><?= $statusType ?></span>
+                        </div>
                     </div>
                     
                     <div class="card-body p-4 pb-2">
@@ -110,10 +119,17 @@
                                     <span class="fw-bold text-dark"><?= htmlspecialchars($prop['office_name']) ?></span>
                                 </div>
                             </div>
-                            <!-- WhatsApp İletişim Butonu -->
-                            <a href="<?= $whatsAppUrl ?>" target="_blank" class="btn btn-success d-flex align-items-center rounded-pill shadow-sm" title="Ofise WhatsApp'tan Yazarak Paslaşma Talep Et">
-                                <i class="bi bi-whatsapp me-2"></i> Paslaş
-                            </a>
+                            <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
+                                <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase/show/' . (int) $prop['id']) . '?tenant=' . (int) $prop['tenant_id']) ?>"
+                                   target="_blank" rel="noopener"
+                                   class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center"
+                                   title="İlanın müşteri vitrinindeki detay ve fotoğrafları">
+                                    <i class="bi bi-images me-1"></i> Fotoğraflar
+                                </a>
+                                <a href="<?= htmlspecialchars($whatsAppUrl) ?>" target="_blank" rel="noopener" class="btn btn-success d-flex align-items-center justify-content-center rounded-pill shadow-sm" title="Ofise WhatsApp'tan yazarak paslaşma talep et">
+                                    <i class="bi bi-whatsapp me-2"></i> Paslaş
+                                </a>
+                            </div>
                         </div>
                         <?php if ($officePhone): ?>
                              <div class="text-muted text-end mt-2"><small><i class="bi bi-telephone"></i> <?= htmlspecialchars($officePhone) ?></small></div>
