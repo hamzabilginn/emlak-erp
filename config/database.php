@@ -91,6 +91,80 @@ class Database {
     }
 
     /**
+     * Render’da dns_get_record/gethostbyname bazen A kaydı dönmez; libpq IPv6’ya düşer.
+     * DoH ile dışarıdan A kaydı alır (allow_url_fopen veya curl).
+     */
+    private static function resolveIpv4ViaPublicDns(string $fqdn): ?string {
+        $endpoints = [
+            [
+                'url' => 'https://cloudflare-dns.com/dns-query?' . http_build_query(['name' => $fqdn, 'type' => 'A']),
+                'header' => 'Accept: application/dns-json',
+            ],
+            [
+                'url' => 'https://dns.google/resolve?' . http_build_query(['name' => $fqdn, 'type' => 'A']),
+                'header' => 'Accept: application/json',
+            ],
+        ];
+        foreach ($endpoints as $ep) {
+            $json = self::httpGetShort($ep['url'], $ep['header']);
+            if ($json === null) {
+                continue;
+            }
+            $doc = json_decode($json, true);
+            if (!is_array($doc) || (int) ($doc['Status'] ?? -1) !== 0) {
+                continue;
+            }
+            $answers = $doc['Answer'] ?? [];
+            if (!is_array($answers)) {
+                continue;
+            }
+            foreach ($answers as $ans) {
+                $type = (int) ($ans['type'] ?? 0);
+                $data = $ans['data'] ?? '';
+                if ($type === 1 && is_string($data) && $data !== ''
+                    && filter_var($data, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    return $data;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static function httpGetShort(string $url, string $acceptHeaderLine): ?string {
+        $headerBlock = $acceptHeaderLine . "\r\n";
+        if (function_exists('curl_init')) {
+            $ch = curl_init($url);
+            if ($ch === false) {
+                return null;
+            }
+            $header = trim($acceptHeaderLine);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_TIMEOUT => 5,
+                CURLOPT_HTTPHEADER => [$header],
+            ]);
+            $out = curl_exec($ch);
+            $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            if ($out !== false && $code >= 200 && $code < 300) {
+                return (string) $out;
+            }
+            return null;
+        }
+        $ctx = stream_context_create([
+            'http' => [
+                'method' => 'GET',
+                'header' => $headerBlock,
+                'timeout' => 5,
+                'ignore_errors' => true,
+            ],
+        ]);
+        $out = @file_get_contents($url, false, $ctx);
+        return ($out !== false && $out !== '') ? (string) $out : null;
+    }
+
+    /**
      * Render/Docker gibi IPv6’sız ortamlarda libpq ana bilgisayar adını AAAA ile çözer;
      * PDO pgsql çoğu sürümde DSN içindeki hostaddr’ı iletmez. Çözüm: mümkünse host=IPv4
      * (sslmode=require ile uyumlu) veya PGHOSTADDR + host=isim (verify-full/verify-ca).
@@ -122,6 +196,10 @@ class Database {
         if (is_string($legacy) && $legacy !== $host
             && filter_var($legacy, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return [$legacy, $host];
+        }
+        $viaDoh = self::resolveIpv4ViaPublicDns($host);
+        if ($viaDoh !== null) {
+            return [$viaDoh, $host];
         }
         return [null, $host];
     }
