@@ -85,6 +85,39 @@ if (isset($_GET['url'])) {
 
 $segments = explode('/', $uri);
 
+// public/uploads/* : Dosya varsa doğrudan gönder (yoksa router UploadsController diye 404 veriyordu)
+if (!empty($segments[0]) && strcasecmp($segments[0], 'uploads') === 0) {
+    foreach ($segments as $seg) {
+        if ($seg === '' || str_contains($seg, '..')) {
+            http_response_code(400);
+            exit;
+        }
+    }
+    $basePublic = realpath(BASE_PATH . '/public');
+    if ($basePublic !== false) {
+        $candidate = $basePublic . '/' . implode('/', $segments);
+        $real = realpath($candidate);
+        if ($real !== false && str_starts_with($real, $basePublic) && is_file($real)) {
+            $ext = strtolower(pathinfo($real, PATHINFO_EXTENSION));
+            $types = [
+                'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png',
+                'webp' => 'image/webp', 'gif' => 'image/gif',
+            ];
+            header('Content-Type: ' . ($types[$ext] ?? 'application/octet-stream'));
+            header('X-Content-Type-Options: nosniff');
+            header('Cache-Control: public, max-age=86400');
+            readfile($real);
+            exit;
+        }
+    }
+    http_response_code(404);
+    header('Content-Type: text/plain; charset=utf-8');
+    echo 'Görsel bulunamadı. Render/Docker gibi ortamlarda disk genelde kalıcı değildir; '
+        . 'yeniden deploy sonrası yüklenen dosyalar silinir. Çözüm: Render’da Persistent Disk '
+        . '(`public/uploads`e bağlayın) veya Supabase Storage / S3 kullanın.';
+    exit;
+}
+
 // Kök URL: Dashboard (oturum yoksa Auth'a yönlendirir). HomeController dosyasına bağımlılık olmasın diye burada tanımlandı.
 $controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'DashboardController';
 $methodName = !empty($segments[1]) ? $segments[1] : 'index';
