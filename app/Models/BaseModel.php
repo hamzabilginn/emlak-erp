@@ -9,31 +9,32 @@ use PDO;
  * SaaS Koruması: Bütün CRUD işlemlerinde (Insert, Select, Update, Delete) o an oturum açmış kullanıcının
  * $_SESSION['tenant_id'] verisi zorunlu olarak koşullara eklenir. Böylece dükkanlar birbirlerinin verisini göremez.
  */
-abstract class BaseModel {
-    protected ?PDO $db;
-    protected string $table = ''; // Modelin işlem yapacağı tablo adı (Çocuk sınıfta tanımlanmalı)
+<?php
+
+namespace App\Models;
+
+use PDO;
+
+class BaseModel {
+    protected $db;
 
     public function __construct() {
-        // Ortak PDO Bağlantısını al
-        $this->db = Database::getInstance()->getConnection();
+        $config = require __DIR__ . '/../../config/database.php';
+        $dsn = "pgsql:host={$config['host']};port={$config['port']};dbname={$config['dbname']}";
+        $this->db = new PDO($dsn, $config['user'], $config['password'], [
+            PDO::ATTR_ERRMODE => PDO::REPORT_STRICT, // Error mode'u kesinleştir
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        ]);
     }
 
     /**
-     * PDO bağlantısını geri döner (Transaction yönetimi için Controller'da kullanılabilir).
-     * @return PDO|null
+     * Veritabanı bağlantısını döndürür
+     * @return PDO
      */
-    public function getDb(): ?PDO {
+    public function getDb() {
         return $this->db;
     }
-
-    /**
-     * Güvenlik Kontrolü: İşlem yapan kullanıcının bir dükkana (tenant) bağlı olup olmadığını denetler.
-     */\n
-        if (!isset($_SESSION['tenant_id']) || empty($_SESSION['tenant_id'])) {
-            throw new \Exception("Güvenlik İhlali: Aktif dükkan (tenant) kimliği bulunamadı! Lütfen giriş yapın.");
-        }
-        return (int) $_SESSION['tenant_id'];
-    }
+}
     
 
 
