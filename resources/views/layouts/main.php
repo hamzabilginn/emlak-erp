@@ -11,6 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="KTUe-TDE8-rODsoU-xXqDBW4PxoXV2aP_S0HSv9xzb8" />
     <title><?= $pageTitle ?? 'Emlak Platformu' ?></title>
     <!-- UTF-8 Kodlamasına tam destek -->
     

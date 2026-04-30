@@ -9,7 +9,8 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">        
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="KTUe-TDE8-rODsoU-xXqDBW4PxoXV2aP_S0HSv9xzb8" />        
     <title><?= htmlspecialchars((string)$tenantName) ?> - Dijital Portföy</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">

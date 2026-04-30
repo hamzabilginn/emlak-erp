@@ -9,6 +9,7 @@
     <meta charset="UTF-8">
     <!-- UTF-8 Zorunluluğu: Türkçe Karakter Sorunlarını Önler -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="google-site-verification" content="KTUe-TDE8-rODsoU-xXqDBW4PxoXV2aP_S0HSv9xzb8" />
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) : 'Emlak Platformu' ?></title>
