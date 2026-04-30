@@ -1,0 +1,2 @@
+# Apache (.htaccess) Linux konteynerinde CRLF veya UTF-8 BOM ile kırılmasın
+*.htaccess text eol=lf
