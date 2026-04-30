@@ -4,7 +4,7 @@
  * PostgreSQL veritabanımızı sahte (mock) ama kullanışlı "Tenant" ve "User" verileriyle doldurur.
  */
 
-require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../config/database.php';
 
 // String FQCN: IDE (Intelephense P1009) uyumu; PHP 8+ $class::statikCagri desteklenir
 $dbClass = 'Config\\Database';

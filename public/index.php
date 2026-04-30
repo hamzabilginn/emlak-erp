@@ -28,8 +28,8 @@ require_once BASE_PATH . '/config/url.php';
 // Config\Database: autoload ÖNCESI yükle (Render/Linux'ta Database.php vs database.php büyük-küçük harf farkı)
 foreach (
     [
-        BASE_PATH . '/config/Database.php',
         BASE_PATH . '/config/database.php',
+        BASE_PATH . '/config/Database.php',
     ] as $__dbBootstrap
 ) {
     if (is_readable($__dbBootstrap)) {
