@@ -91,12 +91,13 @@ class Database {
     }
 
     /**
-     * Render/Docker gibi IPv6’sız ortamlarda AAAA önce gelince bağlantı düşer.
-     * libpq: host= (SNI/şifreleme için) + hostaddr=IPv4 (gerçek TCP hedefi).
+     * Render/Docker gibi IPv6’sız ortamlarda libpq ana bilgisayar adını AAAA ile çözer;
+     * PDO pgsql çoğu sürümde DSN içindeki hostaddr’ı iletmez. Çözüm: mümkünse host=IPv4
+     * (sslmode=require ile uyumlu) veya PGHOSTADDR + host=isim (verify-full/verify-ca).
      *
-     * @return array{0:?string,1:string} [ hostaddr or null, host for DSN ]
+     * @return array{0:?string,1:string} [ IPv4 adresi veya null, bağlamsal host adı (SNI/log) ]
      */
-    private static function resolvePgsqlHostForDsn(string $host): array {
+    private static function resolvePgsqlIpv4(string $host): array {
         if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             return [null, $host];
         }
@@ -123,6 +124,21 @@ class Database {
             return [$legacy, $host];
         }
         return [null, $host];
+    }
+
+    /**
+     * @return array{dsnHost:string,pgEnv:'PGHOSTADDR'|null,pgVal:?string}
+     */
+    private static function pgsqlConnectTarget(string $logicalHost, string $sslmode): array {
+        [$ipv4, $nameHost] = self::resolvePgsqlIpv4($logicalHost);
+        if ($ipv4 === null) {
+            return ['dsnHost' => $logicalHost, 'pgEnv' => null, 'pgVal' => null];
+        }
+        $strictSsl = in_array(strtolower($sslmode), ['verify-full', 'verify-ca'], true);
+        if ($strictSsl) {
+            return ['dsnHost' => $nameHost, 'pgEnv' => 'PGHOSTADDR', 'pgVal' => $ipv4];
+        }
+        return ['dsnHost' => $ipv4, 'pgEnv' => null, 'pgVal' => null];
     }
 
     private function __construct() {
@@ -157,19 +173,30 @@ class Database {
         }
 
         try {
-            [$hostaddr, $dsnHost] = self::resolvePgsqlHostForDsn($this->host);
-            $dsn = sprintf(
-                'pgsql:host=%s;port=%s;dbname=%s;sslmode=%s',
-                $dsnHost,
-                $this->port,
-                $this->db_name,
-                $this->sslmode
-            );
-            if ($hostaddr !== null) {
-                $dsn .= ';hostaddr=' . $hostaddr;
+            $target = self::pgsqlConnectTarget($this->host, $this->sslmode);
+            $pgPrev = $target['pgEnv'] !== null ? getenv($target['pgEnv']) : false;
+            if ($target['pgEnv'] !== null && $target['pgVal'] !== null) {
+                putenv($target['pgEnv'] . '=' . $target['pgVal']);
             }
+            try {
+                $dsn = sprintf(
+                    'pgsql:host=%s;port=%s;dbname=%s;sslmode=%s',
+                    $target['dsnHost'],
+                    $this->port,
+                    $this->db_name,
+                    $this->sslmode
+                );
 
-            $this->conn = new PDO($dsn, $this->username, $this->password);
+                $this->conn = new PDO($dsn, $this->username, $this->password);
+            } finally {
+                if ($target['pgEnv'] !== null) {
+                    if ($pgPrev === false) {
+                        putenv($target['pgEnv']);
+                    } else {
+                        putenv($target['pgEnv'] . '=' . $pgPrev);
+                    }
+                }
+            }
 
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
