@@ -21,7 +21,7 @@ class NetworkController extends BaseController {
         $db = Database::getInstance()->getConnection();
         $currentTenantId = (int) $_SESSION['tenant_id'];
 
-        // Diğer ofislerin (tenant_id != current) 'is_shared_pool' = true olan satış/kiralık ilanları.
+        // Paylaşıma açılmış (is_shared_pool) satış/kiralık ilanlar — tüm ofisler (kendi ilanınız dahil).
         // Kapak: ShowcaseController ile aynı alt sorgu (property_images).
         $sql = "SELECT p.*, t.name AS office_name, t.phone AS office_phone,
                 (SELECT pi.image_path FROM property_images pi
@@ -30,18 +30,18 @@ class NetworkController extends BaseController {
                 FROM properties p
                 INNER JOIN tenants t ON p.tenant_id = t.id
                 WHERE p.is_shared_pool = TRUE
-                AND p.tenant_id != :tid
                 AND p.status IN ('for_sale', 'for_rent')
                 ORDER BY p.created_at DESC";
 
         $stmt = $db->prepare($sql);
-        $stmt->execute([':tid' => $currentTenantId]);
-        
+        $stmt->execute();
+
         $sharedProperties = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $this->render('network/index', [
             'pageTitle' => 'Ortak Havuz (Paslaşma Ağı)',
-            'sharedProperties' => $sharedProperties
+            'sharedProperties' => $sharedProperties,
+            'currentTenantId' => $currentTenantId,
         ]);
     }
 }

@@ -2,6 +2,7 @@
 /**
  * @var string $pageTitle
  * @var list<array<string, mixed>> $sharedProperties
+ * @var int $currentTenantId
  */
 ?>
 <div class="row mb-4 align-items-center">
@@ -117,6 +118,9 @@
                                 <div>
                                     <small class="text-muted d-block" style="font-size: 0.75rem;">İLAN SAHİBİ (OFİS)</small>
                                     <span class="fw-bold text-dark"><?= htmlspecialchars($prop['office_name']) ?></span>
+                                    <?php if ((int) ($prop['tenant_id'] ?? 0) === (int) ($currentTenantId ?? 0)): ?>
+                                        <span class="badge bg-secondary ms-1">Kendi ilanınız</span>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
