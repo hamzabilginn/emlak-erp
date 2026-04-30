@@ -51,6 +51,12 @@ class SupabaseStorageClient {
         }
 
         $msg = $this->formatApiError($response['body'], $response['code']);
+        $this->log(sprintf(
+            'Upload failed object=%s HTTP=%d body=%s',
+            $objectPath,
+            $response['code'],
+            substr($response['body'], 0, 500)
+        ));
         return ['ok' => false, 'error' => $msg, 'status' => $response['code']];
     }
 
@@ -113,8 +119,14 @@ class SupabaseStorageClient {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         }
         $responseBody = curl_exec($ch);
+        $curlErr = $responseBody === false ? curl_error($ch) : '';
         $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+
+        if ($curlErr !== '') {
+            $this->log('cURL: ' . $curlErr . ' | URL=' . $this->redactUrl($url));
+            return ['code' => 0, 'body' => $curlErr];
+        }
 
         return [
             'code' => $code,
@@ -135,5 +147,20 @@ class SupabaseStorageClient {
             return "Supabase Storage (HTTP {$code}): {$trim}";
         }
         return "Supabase Storage yükleme başarısız (HTTP {$code}).";
+    }
+
+    private function log(string $line): void {
+        error_log('[SupabaseStorage] ' . $line);
+    }
+
+    /** Log için tam URL yerine host + path özeti */
+    private function redactUrl(string $url): string {
+        $p = parse_url($url);
+        if (!is_array($p)) {
+            return '(geçersiz-url)';
+        }
+        $host = $p['host'] ?? '';
+        $path = $p['path'] ?? '';
+        return $host . $path;
     }
 }

@@ -174,14 +174,18 @@ class PropertyController extends BaseController {
 
         $storage = new SupabaseStorageClient();
         if (!$storage->isConfigured()) {
-            $_SESSION['error'] = 'Supabase Storage kullanılamıyor: SUPABASE_URL ve SUPABASE_SERVICE_ROLE_KEY '
+            $msg = 'Supabase Storage kullanılamıyor: SUPABASE_URL ve SUPABASE_SERVICE_ROLE_KEY '
                 . 'ortam değişkenlerini ayarlayın. İsteğe bağlı: SUPABASE_STORAGE_BUCKET (varsayılan: ilan-fotograflari).';
+            error_log('[PropertyController::handleImages] ' . $msg);
+            $_SESSION['error'] = $msg;
             return;
         }
 
         $tenantId = (int) ($_SESSION['tenant_id'] ?? 0);
         if ($tenantId <= 0) {
-            $_SESSION['error'] = 'Oturumdaki ofis bilgisi bulunamadı; fotoğraf yüklenemedi.';
+            $msg = 'Oturumdaki ofis bilgisi bulunamadı; fotoğraf yüklenemedi.';
+            error_log('[PropertyController::handleImages] ' . $msg);
+            $_SESSION['error'] = $msg;
             return;
         }
 
@@ -206,6 +210,7 @@ class PropertyController extends BaseController {
             $name = basename((string) $_FILES['images']['name'][$i]);
             $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
             if (!isset($mimeByExt[$ext])) {
+                $errors[] = 'Dosya ' . ($i + 1) . ' (“' . $name . '”): izin verilen uzantılar jpg, jpeg, png, webp.';
                 continue;
             }
 
@@ -222,7 +227,9 @@ class PropertyController extends BaseController {
         }
 
         if (!empty($errors)) {
-            $_SESSION['error'] = implode(' ', $errors);
+            $joined = implode(' ', $errors);
+            error_log('[PropertyController::handleImages] ' . $joined);
+            $_SESSION['error'] = $joined;
         }
     }
 }

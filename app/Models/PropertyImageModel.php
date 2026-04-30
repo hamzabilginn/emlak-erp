@@ -32,7 +32,7 @@ class PropertyImageModel extends BaseModel {
     }
     
     /**
-     * Resim kaydı ekler. Eğer ilanın ilk resmiyse cover yapar.
+     * @param string $imagePath Supabase public URL (https://.../storage/v1/object/public/...) veya eski yerel /uploads/... yolu
      */
     public function addImage(int $propertyId, string $imagePath): bool {
         // Kontrol et: Bu ilanın mevcut resmi var mı?
@@ -42,10 +42,14 @@ class PropertyImageModel extends BaseModel {
         // BaseModel tarafında insert için tenant_id gerekli mi? Tabloda yok, doğrudan prepare kullanıyoruz.
         // BaseModel.php'deki default insert tenant_id deniyor. Kendi insert'imizi yazıyoruz.
         $stmt = $this->db->prepare("INSERT INTO {$this->table} (property_id, image_path, is_cover) VALUES (:pid, :path, {$isCover})");
-        return $stmt->execute([
+        $ok = $stmt->execute([
             ':pid' => $propertyId,
             ':path' => $imagePath
         ]);
+        if (!$ok) {
+            error_log('[PropertyImageModel::addImage] PDO error: ' . json_encode($stmt->errorInfo(), JSON_UNESCAPED_UNICODE));
+        }
+        return $ok;
     }
     
     /**
@@ -66,6 +70,7 @@ class PropertyImageModel extends BaseModel {
             return true;
         } catch (\Exception $e) {
             $this->db->rollBack();
+            error_log('[PropertyImageModel::setCover] ' . $e->getMessage());
             return false;
         }
     }
