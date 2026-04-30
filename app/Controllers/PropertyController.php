@@ -171,8 +171,23 @@ class PropertyController extends BaseController {
      * 3. Veritabanından property ve images silir
      * Eğer herhangi bir hata: Rollback ve hata mesajı göster.
      */
-    public function delete(int $id): void {
+    /**
+     * İlan Silme: Veritabanı Transaction'ı içinde:
+     * 1. İlana ait tüm görselleri bulur
+     * 2. Supabase Storage'tan siler
+     * 3. Veritabanından property ve images kayıtlarını siler
+     */
+    public function delete(): void {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/emlak/public/portfoyler');
+            return;
+        }
+
+        // 1. Parametreyi URL'den değil, güvenli bir şekilde POST formundan alıyoruz
+        $id = filter_input(INPUT_POST, 'property_id', FILTER_VALIDATE_INT);
+
+        if (!$id) {
+            $_SESSION['error'] = 'Silinecek ilan kimliği bulunamadı.';
             $this->redirect('/emlak/public/portfoyler');
             return;
         }
@@ -181,7 +196,7 @@ class PropertyController extends BaseController {
         $imageModel = new PropertyImageModel();
         $storage = new SupabaseStorageClient();
 
-        // Silme izni: İlan mevcut mu ve bu tenant'a ait mi kontrol et
+        // 2. Silme izni: İlan mevcut mu ve bu tenant'a ait mi kontrol et
         $property = $propertyModel->getById($id);
         if (!$property) {
             $_SESSION['error'] = 'İlan bulunamadı veya bu kaydı silme yetkiniz yok.';
@@ -190,8 +205,7 @@ class PropertyController extends BaseController {
         }
 
         try {
-            // Transaction başlat (silme işleminin atomikliği)
-            // Model'ın db bağlantısını kullan (Base Model'dan erişilebilir)
+            // Transaction başlat (silme işleminin atomikliği için)
             $dbConnection = (new PropertyModel())->getDb();
             if (!$dbConnection) {
                 throw new \Exception('Veritabanı bağlantısı kurulamadı.');
@@ -207,7 +221,6 @@ class PropertyController extends BaseController {
                 if (!empty($deleteResult['failedUrls'])) {
                     $failedCount = count($deleteResult['failedUrls']);
                     error_log("[PropertyController::delete] Supabase silme başarısız ({$failedCount}/{$deleteResult['totalCount']}): " . json_encode($deleteResult['failedUrls'], JSON_UNESCAPED_UNICODE));
-                    // UYARI: Çoğu başarılıysa, DB'den de sil (yetim dosya kabul edilebilir)
                 }
             }
 
@@ -223,8 +236,8 @@ class PropertyController extends BaseController {
 
             // Transaction'ı commit et
             $dbConnection->commit();
-
             $_SESSION['success'] = 'İlan ve tüm görselleri başarıyla silindi.';
+
         } catch (\Exception $e) {
             // Hata oluşursa tüm işlemi geri al
             $dbConnection = (new PropertyModel())->getDb();
