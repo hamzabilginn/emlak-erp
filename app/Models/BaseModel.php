@@ -3,6 +3,7 @@ namespace App\Models;
 
 use PDO;
 use Exception;
+use Config\Database; // Orijinal namespace'ini geri getirdik!
 
 /**
  * Base Model: Bütün modellerin (Customer, Property vb.) türetileceği çekirdek yapı.
@@ -14,8 +15,8 @@ abstract class BaseModel {
     protected string $table = ''; // Modelin işlem yapacağı tablo adı
 
     public function __construct() {
-        // Veritabanı bağlantısını Core altındaki Database sınıfından alıyoruz
-        $this->db = \App\Core\Database::getInstance()->getConnection();
+        // HATA BURADAYDI: Senin orijinal veritabanı bağlantı yolunu geri getirdik
+        $this->db = Database::getInstance()->getConnection();
     }
 
     /**
