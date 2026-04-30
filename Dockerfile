@@ -4,7 +4,7 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
-    && docker-php-ext-install -j"$(nproc)" pdo pgsql pdo_pgsql curl \
+    && docker-php-ext-install -j"`nproc`" pdo pgsql pdo_pgsql curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,7 +24,7 @@ RUN set -e; \
     for f in /var/www/html/public/.htaccess /var/www/html/.htaccess; do \
         if [ -f "$$f" ]; then \
             sed -i 's/\r$$//' "$$f"; \
-            first=$$(od -An -tx1 -N3 "$$f" 2>/dev/null | tr -d ' \n' || true); \
+            first=`od -An -tx1 -N3 "$$f" 2>/dev/null | tr -d ' \n' || true`; \
             if [ "$$first" = "efbbbf" ]; then \
                 tail -c +4 "$$f" > "$$f.nobom" && mv "$$f.nobom" "$$f"; \
             fi; \
