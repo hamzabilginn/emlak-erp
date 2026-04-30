@@ -1,33 +1,31 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
+RewriteEngine On
 
-    # Eğer istenen şey fiziksel bir klasör ortamı değilse ve URL sonu / ile bitiyorsa slashi kaldır
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_URI} (.+)/$
-    RewriteRule ^ %1 [L,R=301]
+# Sondaki gereksiz / kaldır
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} (.+)/$
+RewriteRule ^ %1 [L,R=301]
 
-    # TÜRKÇE LİNK (ROUTING) İSİMLENDİRMELERİ
-    RewriteRule ^portfoyler/?$ index.php?url=property/index [QSA,L]
-    RewriteRule ^portfoy-ekle/?$ index.php?url=property/create [QSA,L]
-    RewriteRule ^portfoy-duzenle/([0-9]+)/?$ index.php?url=property/edit/$1 [QSA,L]
+# Turkce URL -> router (php:apache imajinda mod_rewrite zaten acik)
+RewriteRule ^portfoyler/?$ index.php?url=property/index [QSA,L]
+RewriteRule ^portfoy-ekle/?$ index.php?url=property/create [QSA,L]
+RewriteRule ^portfoy-duzenle/([0-9]+)/?$ index.php?url=property/edit/$1 [QSA,L]
 
-    RewriteRule ^musteriler/?$ index.php?url=customer/index [QSA,L]
-    RewriteRule ^musteri-sahsi/?$ index.php?url=customer/createIndividual [QSA,L]
-    RewriteRule ^musteri-kurumsal/?$ index.php?url=customer/createCorporate [QSA,L]
+RewriteRule ^musteriler/?$ index.php?url=customer/index [QSA,L]
+RewriteRule ^musteri-sahsi/?$ index.php?url=customer/createIndividual [QSA,L]
+RewriteRule ^musteri-kurumsal/?$ index.php?url=customer/createCorporate [QSA,L]
 
-    RewriteRule ^yer-gosterme/?$ index.php?url=viewing/index [QSA,L]
-    RewriteRule ^yer-gosterme-ekle/?$ index.php?url=viewing/create [QSA,L]
+RewriteRule ^yer-gosterme/?$ index.php?url=viewing/index [QSA,L]
+RewriteRule ^yer-gosterme-ekle/?$ index.php?url=viewing/create [QSA,L]
 
-    RewriteRule ^ortak-havuz/?$ index.php?url=network/index [QSA,L]
-    RewriteRule ^esnaf-kasasi/?$ index.php?url=cashbox/index [QSA,L]
+RewriteRule ^ortak-havuz/?$ index.php?url=network/index [QSA,L]
+RewriteRule ^esnaf-kasasi/?$ index.php?url=cashbox/index [QSA,L]
 
-    RewriteRule ^giris-yap/?$ index.php?url=auth/login [QSA,L]
-    RewriteRule ^cikis-yap/?$ index.php?url=auth/logout [QSA,L]
+RewriteRule ^giris-yap/?$ index.php?url=auth/login [QSA,L]
+RewriteRule ^cikis-yap/?$ index.php?url=auth/logout [QSA,L]
 
-    RewriteRule ^ana-pano/?$ index.php?url=dashboard/index [QSA,L]
-    RewriteRule ^vitrin/?$ index.php?url=showcase/index [QSA,L]
+RewriteRule ^ana-pano/?$ index.php?url=dashboard/index [QSA,L]
+RewriteRule ^vitrin/?$ index.php?url=showcase/index [QSA,L]
 
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
-</IfModule>
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L]

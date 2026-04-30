@@ -18,6 +18,14 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html/
 
+# Windows CRLF .htaccess satirlari Apache'de sorun cikarabiliyor
+RUN set -e; \
+    for f in /var/www/html/public/.htaccess /var/www/html/.htaccess; do \
+        if [ -f "$$f" ]; then sed -i 's/\r$$//' "$$f"; fi; \
+    done
+
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+
 RUN chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 755 {} \; \
     && find /var/www/html -type f -exec chmod 644 {} \;

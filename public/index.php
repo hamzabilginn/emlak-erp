@@ -18,7 +18,7 @@ require_once BASE_PATH . '/config/url.php';
 
 // Basit Autoloader (Composer kullanmadan kendi sınıflarımızı yüklemek için)
 spl_autoload_register(function ($class) {
-    // Namespace'i dosya yoluna çeviriyoruz (Örn: App\Controllers\HomeController -> app/Controllers/HomeController.php)
+    // Namespace'i dosya yoluna çeviriyoruz (Örn: App\Controllers\DashboardController -> app/Controllers/DashboardController.php)
     $file = BASE_PATH . '/' . str_replace('\\', '/', $class) . '.php';
     
     // Klasör isimlerini küçük harfe dönüştürerek standartlaştırıyoruz (App -> app, Config -> config)
@@ -59,8 +59,8 @@ if (isset($_GET['url'])) {
 
 $segments = explode('/', $uri);
 
-// Default Controller: HomeController | Default Model: index
-$controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'HomeController';
+// Kök URL: Dashboard (oturum yoksa Auth'a yönlendirir). HomeController dosyasına bağımlılık olmasın diye burada tanımlandı.
+$controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'DashboardController';
 $methodName = !empty($segments[1]) ? $segments[1] : 'index';
 $params = array_slice($segments, 2);
 
