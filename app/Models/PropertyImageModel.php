@@ -131,4 +131,34 @@ class PropertyImageModel extends BaseModel {
         }
         return false;
     }
+
+    /**
+     * İlana ait tüm görsellerin URL'lerini döner (Silme işleminde Supabase Storage'tan silmek için).
+     * Türkçe karakter desteği: mb_ fonksiyonları kullanılabilir.
+     */
+    public function getImagePathsByPropertyId(int $propertyId): array {
+        $stmt = $this->db->prepare("SELECT image_path FROM {$this->table} WHERE property_id = :pid");
+        $stmt->execute([':pid' => $propertyId]);
+        $rows = $stmt->fetchAll();
+        return array_column($rows, 'image_path');
+    }
+
+    /**
+     * İlana ait tüm görselleri veritabanından siler.
+     * UYARI: Çağrı yapmadan önce Supabase Storage'tan silinmiş olmalı.
+     */
+    public function deleteAllByPropertyId(int $propertyId): bool {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE property_id = :pid");
+            $result = $stmt->execute([':pid' => $propertyId]);
+            if (!$result) {
+                error_log('[PropertyImageModel::deleteAllByPropertyId] PDO Hatası: ' . json_encode($stmt->errorInfo(), JSON_UNESCAPED_UNICODE));
+                return false;
+            }
+            return true;
+        } catch (\Exception $e) {
+            error_log('[PropertyImageModel::deleteAllByPropertyId] Exception: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

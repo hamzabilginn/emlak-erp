@@ -111,6 +111,11 @@
                                             <i class="bi bi-heptagon-half"></i> Bağla
                                         </button>
                                     <?php endif; ?>
+
+                                    <!-- İlan Silme Butonu -->
+                                    <button type="button" class="btn btn-sm btn-danger rounded-circle ms-1" data-bs-toggle="modal" data-bs-target="#deleteModal" data-property-id="<?= htmlspecialchars($prop['id']) ?>" data-property-title="<?= htmlspecialchars(mb_substr($prop['title'] ?? '', 0, 50, 'UTF-8')) ?>" title="İlanı Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -205,6 +210,73 @@ document.addEventListener('DOMContentLoaded', function () {
             modalDealTypeInput.value = dealType;
             modalPriceInput.value = price;
         })
+    }
+});
+</script>
+
+<!-- ============================================
+     SİLME (DELETE) ONAY MODAL
+     ============================================ -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-top-danger" style="border-top: .35rem solid #dc3545;">
+            <div class="modal-header bg-danger bg-opacity-10 border-danger">
+                <h5 class="modal-title fw-bold text-danger" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> İlanı Sil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <form id="deleteForm" method="POST" action="<?= htmlspecialchars(\web_url('/emlak/public/property/delete')) ?>" style="display: none;">
+                <input type="hidden" name="property_id" id="deletePropertyId" value="">\n            </form>
+            <div class="modal-body">
+                <div class="alert alert-danger mb-3" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong>Bu işlem geri alınamaz!</strong> İlan ve bağlı tüm görselleri kalıcı olarak sileceksiniz.
+                </div>
+                <p class="mb-0">
+                    Silinecek İlan: <strong id="deletePropertyTitle">-</strong>
+                </p>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-danger fw-bold shadow-sm" onclick="document.getElementById('deleteForm').submit();">
+                    <i class="bi bi-trash3 me-1"></i> Evet, İlanı Sil
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteModal = document.getElementById('deleteModal')
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget
+            var propertyId = button.getAttribute('data-property-id')
+            var propertyTitle = button.getAttribute('data-property-title')
+
+            var modalPropertyIdInput = deleteModal.querySelector('#deletePropertyId')
+            var modalPropertyTitle = deleteModal.querySelector('#deletePropertyTitle')
+
+            modalPropertyIdInput.value = propertyId;
+            modalPropertyTitle.textContent = propertyTitle || '(Başlık Yok)';
+        })
+    }
+
+    // Silme formu submit handler'ı: URL'ye ID'yi dinamik ekle
+    var deleteForm = document.getElementById('deleteForm');
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var propertyId = document.getElementById('deletePropertyId').value;
+            if (propertyId) {
+                // Form action'ını dinamik olarak URL'ye propertyId'yi ekleyerek ayarla
+                var baseUrl = '<?= htmlspecialchars(\web_url('/emlak/public/property/delete')) ?>';
+                deleteForm.action = baseUrl + '/' + propertyId;
+                deleteForm.submit();
+            }
+        });
     }
 });
 </script>

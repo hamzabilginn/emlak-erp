@@ -165,6 +165,80 @@ class PropertyController extends BaseController {
 
 
     /**
+     * İlan Silme: Veritabanı Transaction'ı içinde:
+     * 1. İlana ait tüm görselleri bulur
+     * 2. Supabase Storage'tan siler
+     * 3. Veritabanından property ve images silir
+     * Eğer herhangi bir hata: Rollback ve hata mesajı göster.
+     */
+    public function delete(int $id): void {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/emlak/public/portfoyler');
+            return;
+        }
+
+        $propertyModel = new PropertyModel();
+        $imageModel = new PropertyImageModel();
+        $storage = new SupabaseStorageClient();
+
+        // Silme izni: İlan mevcut mu ve bu tenant'a ait mi kontrol et
+        $property = $propertyModel->getById($id);
+        if (!$property) {
+            $_SESSION['error'] = 'İlan bulunamadı veya bu kaydı silme yetkiniz yok.';
+            $this->redirect('/emlak/public/portfoyler');
+            return;
+        }
+
+        try {
+            // Transaction başlat (silme işleminin atomikliği)
+            // Model'ın db bağlantısını kullan (Base Model'dan erişilebilir)
+            $dbConnection = (new PropertyModel())->getDb();
+            if (!$dbConnection) {
+                throw new \Exception('Veritabanı bağlantısı kurulamadı.');
+            }
+            $dbConnection->beginTransaction();
+
+            // 1. İlana ait tüm görsellerin URL'lerini al
+            $imagePaths = $imageModel->getImagePathsByPropertyId($id);
+
+            // 2. Supabase Storage'tan sil (başarısız olanları log et, fakat devam et)
+            if (!empty($imagePaths) && $storage->isConfigured()) {
+                $deleteResult = $storage->deleteObjectsByPublicUrls($imagePaths);
+                if (!empty($deleteResult['failedUrls'])) {
+                    $failedCount = count($deleteResult['failedUrls']);
+                    error_log("[PropertyController::delete] Supabase silme başarısız ({$failedCount}/{$deleteResult['totalCount']}): " . json_encode($deleteResult['failedUrls'], JSON_UNESCAPED_UNICODE));
+                    // UYARI: Çoğu başarılıysa, DB'den de sil (yetim dosya kabul edilebilir)
+                }
+            }
+
+            // 3. property_images tablosundan tüm görselleri sil
+            if (!$imageModel->deleteAllByPropertyId($id)) {
+                throw new \Exception('Veritabanından görseller silinemedi.');
+            }
+
+            // 4. properties tablosundan ilanı sil
+            if (!$propertyModel->delete($id)) {
+                throw new \Exception('İlan veritabanından silinemedi.');
+            }
+
+            // Transaction'ı commit et
+            $dbConnection->commit();
+
+            $_SESSION['success'] = 'İlan ve tüm görselleri başarıyla silindi.';
+        } catch (\Exception $e) {
+            // Hata oluşursa tüm işlemi geri al
+            $dbConnection = (new PropertyModel())->getDb();
+            if ($dbConnection && $dbConnection->inTransaction()) {
+                $dbConnection->rollBack();
+            }
+            error_log('[PropertyController::delete] Transaction hatası (ID=' . $id . '): ' . $e->getMessage());
+            $_SESSION['error'] = 'İlan silme işlemi başarısız oldu: ' . mb_substr($e->getMessage(), 0, 200, 'UTF-8');
+        }
+
+        $this->redirect('/emlak/public/portfoyler');
+    }
+
+    /**
      * Çoklu resim: geçici dosyayı Supabase Storage'a yükler, dönen herkese açık URL'i DB'ye yazar.
      */
     protected function handleImages(int $propertyId): void {

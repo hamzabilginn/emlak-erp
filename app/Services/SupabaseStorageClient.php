@@ -60,6 +60,10 @@ class SupabaseStorageClient {
         return ['ok' => false, 'error' => $msg, 'status' => $response['code']];
     }
 
+    /**
+     * Public URL ile bir dosyayı siler (single).
+     * @return bool True silme başarılı, False başarısız veya yapılandırma eksik
+     */
     public function deleteObjectByPublicUrl(string $publicUrl): bool {
         if (!$this->isConfigured() || $publicUrl === '') {
             return false;
@@ -70,7 +74,36 @@ class SupabaseStorageClient {
         }
         $url = $this->baseUrl . '/storage/v1/object/' . rawurlencode($this->bucket) . '/' . $this->encodePathSegments($objectPath);
         $response = $this->request('DELETE', $url, '', []);
-        return $response['code'] >= 200 && $response['code'] < 300;
+        $success = $response['code'] >= 200 && $response['code'] < 300;
+        if (!$success && $response['code'] !== 404) {
+            $this->log('Delete failed: ' . $objectPath . ' HTTP=' . $response['code'] . ' body=' . substr($response['body'], 0, 200));
+        }
+        return $success;
+    }
+
+    /**
+     * Birden fazla public URL ile dosya silme (batch).
+     * Başarısız silenenleri log eder ancak işleme devam eder.
+     * @param list<string> $publicUrls
+     * @return array{totalCount:int, successCount:int, failedUrls:list<string>}
+     */
+    public function deleteObjectsByPublicUrls(array $publicUrls): array {
+        $result = ['totalCount' => count($publicUrls), 'successCount' => 0, 'failedUrls' => []];
+        if (!$this->isConfigured()) {
+            $result['failedUrls'] = $publicUrls;
+            return $result;
+        }
+        foreach ($publicUrls as $url) {
+            if (empty($url)) {
+                continue;
+            }
+            if ($this->deleteObjectByPublicUrl($url)) {
+                $result['successCount']++;
+            } else {
+                $result['failedUrls'][] = $url;
+            }
+        }
+        return $result;
     }
 
     public function publicUrlForObject(string $objectPath): string {

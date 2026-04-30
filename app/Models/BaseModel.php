@@ -19,9 +19,16 @@ abstract class BaseModel {
     }
 
     /**
-     * Güvenlik Kontrolü: İşlem yapan kullanıcının bir dükkana (tenant) bağlı olup olmadığını denetler.
+     * PDO bağlantısını geri döner (Transaction yönetimi için Controller'da kullanılabilir).
+     * @return PDO|null
      */
-    protected function getTenantId(): int {
+    public function getDb(): ?PDO {
+        return $this->db;
+    }
+
+    /**
+     * Güvenlik Kontrolü: İşlem yapan kullanıcının bir dükkana (tenant) bağlı olup olmadığını denetler.
+     */\n
         if (!isset($_SESSION['tenant_id']) || empty($_SESSION['tenant_id'])) {
             throw new \Exception("Güvenlik İhlali: Aktif dükkan (tenant) kimliği bulunamadı! Lütfen giriş yapın.");
         }
