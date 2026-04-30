@@ -17,7 +17,7 @@
 <div class="card shadow-sm border-0 rounded-3 mb-5">
     <div class="card-body p-4">
         <!-- İlan Formu. Method zorunlu POST ve route "/property/store" -->
-        <form action="<?= htmlspecialchars(\web_url('/emlak/public/property/store')) ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-kaydet')) ?>" method="POST" enctype="multipart/form-data">
 
             <!-- 1. Bölüm: Temel Mülk Bilgileri -->
             <h5 class="text-primary border-bottom pb-2 mb-4">

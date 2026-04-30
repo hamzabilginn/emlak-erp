@@ -1,4 +1,4 @@
-RewriteEngine On
+﻿RewriteEngine On
 
 # Sondaki gereksiz / kaldır
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -8,7 +8,9 @@ RewriteRule ^ %1 [L,R=301]
 # Turkce URL -> router (php:apache imajinda mod_rewrite zaten acik)
 RewriteRule ^portfoyler/?$ index.php?url=property/index [QSA,L]
 RewriteRule ^portfoy-ekle/?$ index.php?url=property/create [QSA,L]
+RewriteRule ^portfoy-kaydet/?$ index.php?url=property/store [QSA,L]
 RewriteRule ^portfoy-duzenle/([0-9]+)/?$ index.php?url=property/edit/$1 [QSA,L]
+RewriteRule ^portfoy-guncelle/([0-9]+)/?$ index.php?url=property/update/$1 [QSA,L]
 
 RewriteRule ^musteriler/?$ index.php?url=customer/index [QSA,L]
 RewriteRule ^musteri-sahsi/?$ index.php?url=customer/createIndividual [QSA,L]

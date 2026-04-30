@@ -218,7 +218,13 @@ class PropertyController extends BaseController {
             $result = $storage->uploadObject($tmpName, $objectKey, $mimeByExt[$ext]);
 
             if (!empty($result['ok']) && !empty($result['publicUrl'])) {
-                if (!$imageModel->addImage($propertyId, $result['publicUrl'])) {
+                $publicUrl = (string) $result['publicUrl'];
+                if (preg_match('#^https?://#i', $publicUrl) !== 1) {
+                    $errors[] = 'Storage yanıtı geçersiz (tam public URL bekleniyordu).';
+                    error_log('[PropertyController::handleImages] Geçersiz publicUrl: ' . substr($publicUrl, 0, 200));
+                    continue;
+                }
+                if (!$imageModel->addImage($propertyId, $publicUrl)) {
                     $errors[] = 'Veritabanına kayıt eklenemedi (' . $objectKey . ').';
                 }
             } else {

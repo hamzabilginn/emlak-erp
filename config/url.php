@@ -27,7 +27,7 @@ if (!function_exists('web_url')) {
 
 if (!function_exists('property_image_url')) {
     /**
-     * Veritabanındaki image_path: tam https (Supabase) veya eski yerel /uploads/... yolu.
+     * Veritabanındaki image_path: tam https URL veya eski /uploads/... (Supabase kökü varsa public URL'ye çevrilir).
      */
     function property_image_url(string $storedPath): string {
         $storedPath = trim($storedPath);
@@ -37,7 +37,38 @@ if (!function_exists('property_image_url')) {
         if (preg_match('#^https?://#i', $storedPath) === 1) {
             return $storedPath;
         }
-        $prefix = str_starts_with($storedPath, '/') ? $storedPath : '/' . $storedPath;
-        return web_url('/emlak/public' . $prefix);
+
+        $local = str_starts_with($storedPath, '/') ? $storedPath : '/' . $storedPath;
+
+        if (str_starts_with($local, '/uploads/')) {
+            $mapped = property_image_legacy_uploads_to_supabase_url($local);
+            if ($mapped !== '') {
+                return $mapped;
+            }
+        }
+
+        return web_url('/emlak/public' . $local);
+    }
+}
+
+if (!function_exists('property_image_legacy_uploads_to_supabase_url')) {
+    /**
+     * Eski DB: /uploads/properties/dosya.jpg → Supabase public URL.
+     * Bucket içinde aynı göreli yol kullanıldıysa (ör. properties/dosya.jpg) görsel açılır.
+     */
+    function property_image_legacy_uploads_to_supabase_url(string $pathStartingWithUploads): string {
+        $base = rtrim((string) (getenv('SUPABASE_URL') ?: ''), '/');
+        if ($base === '') {
+            return '';
+        }
+        $bucket = (string) (getenv('SUPABASE_STORAGE_BUCKET') ?: 'ilan-fotograflari');
+        $tail = preg_replace('#^/uploads/#', '', $pathStartingWithUploads);
+        $tail = ltrim((string) $tail, '/');
+        if ($tail === '') {
+            return '';
+        }
+        $parts = array_filter(explode('/', str_replace('\\', '/', $tail)), static fn ($p) => $p !== '' && $p !== '.' && $p !== '..');
+        $encoded = implode('/', array_map('rawurlencode', $parts));
+        return $base . '/storage/v1/object/public/' . rawurlencode($bucket) . '/' . $encoded;
     }
 }

@@ -31,10 +31,18 @@ class PropertyImageModel extends BaseModel {
         return $cover ?: null;
     }
     
-    /**
-     * @param string $imagePath Supabase public URL (https://.../storage/v1/object/public/...) veya eski yerel /uploads/... yolu
-     */
     public function addImage(int $propertyId, string $imagePath): bool {
+        $imagePath = trim($imagePath);
+        if ($imagePath === '') {
+            error_log('[PropertyImageModel::addImage] Boş image_path reddedildi.');
+            return false;
+        }
+        // Yeni kayıtlar yalnızca Supabase (veya başka CDN) tam public URL olmalı; /uploads/... artık yazılmıyor.
+        if (preg_match('#^https?://#i', $imagePath) !== 1) {
+            error_log('[PropertyImageModel::addImage] Reddedildi (tam http(s) URL gerekli): ' . substr($imagePath, 0, 120));
+            return false;
+        }
+
         // Kontrol et: Bu ilanın mevcut resmi var mı?
         $existing = $this->getImagesByPropertyId($propertyId);
         $isCover = empty($existing) ? 'true' : 'false';
