@@ -255,25 +255,23 @@ document.addEventListener('DOMContentLoaded', function () {
             var button = event.relatedTarget
             var propertyId = button.getAttribute('data-property-id')
             var propertyTitle = button.getAttribute('data-property-title')
-
+            
             var modalPropertyIdInput = deleteModal.querySelector('#deletePropertyId')
             var modalPropertyTitle = deleteModal.querySelector('#deletePropertyTitle')
-
+            
             modalPropertyIdInput.value = propertyId;
             modalPropertyTitle.textContent = propertyTitle || '(Başlık Yok)';
         })
     }
 
-    // Silme formu submit handler'ı: URL'ye ID'yi dinamik ekle
     var deleteForm = document.getElementById('deleteForm');
     if (deleteForm) {
         deleteForm.addEventListener('submit', function (e) {
             e.preventDefault();
             var propertyId = document.getElementById('deletePropertyId').value;
             if (propertyId) {
-                // Form action'ını dinamik olarak URL'ye propertyId'yi ekleyerek ayarla
-                var baseUrl = '<?= htmlspecialchars(\web_url('/emlak/public/property/delete')) ?>';
-                deleteForm.action = baseUrl + '/' + propertyId;
+                // DOĞRUDAN CONTROLLER/METHOD YAPISINA GÖNDERİYORUZ
+                deleteForm.action = '/emlak/public/property/delete/' + propertyId;
                 deleteForm.submit();
             }
         });
