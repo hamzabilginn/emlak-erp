@@ -9,7 +9,7 @@
         <h2 class="mb-0">Müşteri (CRM) Rehberi</h2>
         <span class="text-muted">Portföyünüzle ilgilenen Tüm Alıcı, Satıcı ve Kiracıları tek merkezden yönetip takip edin.</span>
     </div>
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/customer/create')) ?>" class="btn btn-warning d-flex align-items-center text-dark">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/musteri-sahsi')) ?>" class="btn btn-warning d-flex align-items-center text-dark">
         <i class="bi bi-person-plus-fill me-2 fs-5"></i> Yeni Müşteri Rehbere Ekle
     </a>
 </div>

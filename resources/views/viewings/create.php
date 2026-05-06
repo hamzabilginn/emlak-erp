@@ -10,7 +10,7 @@
         <h2 class="mb-0">Yeni Yer Gösterme Ajandası</h2>
         <span class="text-muted">Ofisinizin İlanları ile Alıcı/Kiracı Müşterinizi anında eşleştirin. Randevu oluşturun.</span>
     </div>
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/viewing/index')) ?>" class="btn btn-outline-secondary d-flex align-items-center mt-3 mt-md-0">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/yer-gosterme')) ?>" class="btn btn-outline-secondary d-flex align-items-center mt-3 mt-md-0">
         <i class="bi bi-arrow-left me-2"></i> Ajandaya Geri Dön
     </a>
 </div>

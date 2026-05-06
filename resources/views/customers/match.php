@@ -43,7 +43,7 @@
         </div>
     </div>
     
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/customer/index')) ?>" class="btn btn-outline-dark d-flex align-items-center mt-3 ms-auto shadow-sm" style="max-height: 48px;">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/musteriler')) ?>" class="btn btn-outline-dark d-flex align-items-center mt-3 ms-auto shadow-sm" style="max-height: 48px;">
         <i class="bi bi-arrow-left me-2 fs-5"></i> Müşteri Rehberine Dön
     </a>
 </div>
@@ -56,7 +56,7 @@
                 <i class="bi bi-x-octagon text-danger fw-bolder mb-3" style="font-size: 3rem;"></i>
                 <h4 class="text-dark fw-bold">Seçilen Kriterlere Göre Herhangi Bir "Eşleşen Mülk" Bulunamadı.</h4>
                 <p class="text-secondary fs-5">Lütfen müşterinizin arama/fiyat kriterlerini veya elinizdeki ilanın özelliklerini yeniden kontrol edip tekrar deneyin.</p>
-                <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/create')) ?>" class="btn btn-danger mt-3 text-white px-5 rounded-pill shadow">
+                <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-ekle')) ?>" class="btn btn-danger mt-3 text-white px-5 rounded-pill shadow">
                     Yeni Bir İlan/Mülk Daha Ekle
                 </a>
             </div>

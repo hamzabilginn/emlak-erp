@@ -9,7 +9,7 @@
         <h2 class="mb-0">Ajanda & Yer Gösterme Takibi</h2>
         <span class="text-muted">Göstermek için sözleştiğiniz müşterilerin kayıtları ve resmi imzalı belgeleri buradan yönetilir.</span>
     </div>
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/viewing/create')) ?>" class="btn btn-primary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/yer-gosterme-ekle')) ?>" class="btn btn-primary d-flex align-items-center">
         <i class="bi bi-calendar-plus me-2 fs-5"></i> Yeni Randevu Planla
     </a>
 </div>

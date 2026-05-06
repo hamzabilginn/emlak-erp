@@ -19,7 +19,7 @@
                 <i class="bi bi-inbox-fill fs-1 d-block mb-3"></i>
                 <h4 class="fw-bold">Şu anda ortak havuzda paylaşılmış bir ilan bulunmuyor.</h4>
                 <p>İlk paslaşma ilanını ofisinizden kendi ilanınızı ekleyerek yapmak ister misiniz?</p>
-                <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/create')) ?>" class="btn btn-primary mt-2">Yeni İlan Ekle</a>
+                <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-ekle')) ?>" class="btn btn-primary mt-2">Yeni İlan Ekle</a>
             </div>
         </div>
     <?php else: ?>

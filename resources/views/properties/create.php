@@ -9,7 +9,7 @@
         <span class="text-muted">Aşağıdaki formu doldurarak ilgili mülkü emlak ofisinize kaydedin.</span>
     </div>
     <!-- Geri dönmek İçin Küçük Bir Ok Butonu -->
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/index')) ?>" class="btn btn-outline-secondary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoyler')) ?>" class="btn btn-outline-secondary d-flex align-items-center">
         <i class="bi bi-arrow-left me-2"></i> Listeye Dön
     </a>
 </div>

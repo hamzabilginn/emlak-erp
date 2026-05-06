@@ -8,7 +8,7 @@
         <h2 class="mb-0">Yeni CRM Müşterisi Oluştur (Adayı Arayın)</h2>
         <span class="text-muted">Aşağıdaki formu doldurup akıllı eşleşme verilerine göre bütçesine sadık müşteriyi kaydedebilirsiniz.</span>
     </div>
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/customer/index')) ?>" class="btn btn-outline-secondary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/musteriler')) ?>" class="btn btn-outline-secondary d-flex align-items-center">
         <i class="bi bi-arrow-left " style="margin-right:0.5rem;"></i> Tüm Müşteriler Rehberine Dön
     </a>
 </div>
