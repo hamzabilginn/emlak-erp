@@ -106,7 +106,7 @@
             $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
             $hostUrl = $protocol . $_SERVER['HTTP_HOST'];
             $tenantRef = $_SESSION['tenant_id'] ?? 0;
-            $showcaseLink = $hostUrl . \web_url('/emlak/public/showcase') . '?tenant=' . urlencode((string) $tenantRef);
+            $showcaseLink = $hostUrl . \web_url('/emlak/public/vitrin') . '?tenant=' . urlencode((string) $tenantRef);
             $waVitrinText = "Merhaba, ofisimizin tüm güncel ve detaylı ilan portföyüne şu linkten ulaşabilirsiniz: {$showcaseLink}";
         ?>
         <a href="https://wa.me/?text=<?= rawurlencode($waVitrinText) ?>" target="_blank" class="text-success fw-bold"><i class="bi bi-whatsapp"></i> Vitrini WhatsApp'ta Paylaş</a>

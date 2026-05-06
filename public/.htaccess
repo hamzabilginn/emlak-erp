@@ -11,6 +11,7 @@ RewriteRule ^portfoy-ekle/?$ index.php?url=property/create [QSA,L]
 RewriteRule ^portfoy-kaydet/?$ index.php?url=property/store [QSA,L]
 RewriteRule ^portfoy-duzenle/([0-9]+)/?$ index.php?url=property/edit/$1 [QSA,L]
 RewriteRule ^portfoy-guncelle/([0-9]+)/?$ index.php?url=property/update/$1 [QSA,L]
+RewriteRule ^portfoyler/?$ index.php?url=property/index [QSA,L]
 
 RewriteRule ^musteriler/?$ index.php?url=customer/index [QSA,L]
 RewriteRule ^musteri-sahsi/?$ index.php?url=customer/createIndividual [QSA,L]
@@ -33,6 +34,8 @@ RewriteRule ^cikis-yap/?$ index.php?url=auth/logout [QSA,L]
 
 RewriteRule ^ana-pano/?$ index.php?url=dashboard/index [QSA,L]
 RewriteRule ^vitrin/?$ index.php?url=showcase/index [QSA,L]
+RewriteRule ^ping/?$ index.php?url=ping/index [QSA,L]
+RewriteRule ^ilan/.+-([0-9]+)/?$ index.php?url=showcase/show/$1 [QSA,L]
 
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f

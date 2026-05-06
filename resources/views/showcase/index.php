@@ -2,6 +2,8 @@
 /**
  * @var int $tenantId
  * @var string $tenantName
+ * @var string $aboutTitle
+ * @var string $aboutText
  * @var list<array<string, mixed>> $properties
  */
 ?>
@@ -118,6 +120,28 @@
                 <p class="text-muted">Lütfen daha sonra tekrar ziyaret ediniz.</p>
             </div>
         <?php else: ?>
+            <div class="row mb-5">
+                <div class="col-lg-8">
+                    <div class="p-4 mb-4 rounded-4" style="background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(15,23,42,0.04));">
+                        <h2 class="fw-bold"><?= htmlspecialchars($aboutTitle ?? ($tenantName . ' Emlak Danışmanlığı')) ?></h2>
+                        <p class="text-secondary mb-0"><?= htmlspecialchars($aboutText ?? 'Güncel ilanlarımızı keşfedin ve güvenilir emlak danışmanlığı hizmetimizle tanışın.') ?></p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="p-4 rounded-4 border border-gray-200 bg-white shadow-sm">
+                        <h5 class="fw-bold mb-3">Dış Kaynaklar</h5>
+                        <a href="https://www.sahibinden.com/ilan/arama?query=<?= rawurlencode($tenantName) ?>" target="_blank" rel="noopener" class="btn btn-outline-dark w-100 mb-2">
+                            <i class="bi bi-box-arrow-up-right me-2"></i> Sahibinden Arama
+                        </a>
+                        <a href="https://www.google.com/search?q=<?= rawurlencode($tenantName . ' emlak') ?>" target="_blank" rel="noopener" class="btn btn-outline-secondary w-100 mb-2">
+                            <i class="bi bi-google me-2"></i> Google'da Ara
+                        </a>
+                        <a href="https://wa.me/?text=<?= rawurlencode('Merhaba, ' . $tenantName . ' ofisinizin güncel emlak portföyünü inceliyorum.') ?>" target="_blank" rel="noopener" class="btn btn-success w-100">
+                            <i class="bi bi-whatsapp me-2"></i> WhatsApp ile Bağlan
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <?php foreach ($properties as $p): ?>
                     <?php 
@@ -155,7 +179,7 @@
                                 <div class="price-tag">
                                     <?= number_format((float)$p['price'], 0, ',', '.') ?> TL
                                 </div>
-                                <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase/show/' . $p['id']) . '?tenant=' . (int) $tenantId) ?>" class="btn btn-outline-primary btn-sm mt-3 fw-bold w-100"><i class="bi bi-eye"></i> İlan Detayını İncele</a>
+                                <a href="<?= htmlspecialchars(property_show_url($p)) ?>" class="btn btn-outline-primary btn-sm mt-3 fw-bold w-100"><i class="bi bi-eye"></i> İlan Detayını İncele</a>
 
                                 <div class="property-details mt-3 mb-2">
                                     <div class="row g-2">

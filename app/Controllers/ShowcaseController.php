@@ -35,11 +35,26 @@ class ShowcaseController {
         $stmt->execute([':t' => $tenantId]);
         $properties = $stmt->fetchAll();
 
+        $stmtFeatured = $db->prepare("SELECT p.*, (SELECT image_path FROM property_images pi WHERE pi.property_id = p.id ORDER BY is_cover DESC, id ASC LIMIT 1) as cover_image FROM properties p WHERE p.tenant_id = :t AND p.status IN ('for_sale', 'for_rent') ORDER BY p.id DESC LIMIT 4");
+        $stmtFeatured->execute([':t' => $tenantId]);
+        $featuredProperties = $stmtFeatured->fetchAll();
+
+        $firstProperty = $properties[0] ?? null;
+        $aboutLocation = '';
+        if ($firstProperty && !empty($firstProperty['city'])) {
+            $aboutLocation = trim(($firstProperty['city'] ?? '') . ' ' . ($firstProperty['district'] ?? ''));
+        }
+        $aboutTitle = $aboutLocation !== '' ? $aboutLocation . ' Emlak Danışmanlığı' : $tenantName . ' Emlak Danışmanlığı';
+        $aboutText = $aboutLocation !== '' ? "{$aboutLocation} bölgesinin en güvenilir gayrimenkul uzmanları olarak sunulan satılık ve kiralık ilanları anında görüntüleyin." : "{$tenantName} ofisi olarak güncel ilanlarla alıcı ve kiracılarınıza hızla ulaşmanızı sağlıyoruz.";
+
         // Render işlemi (BaseController extend etmediğimiz için veya public view olduğu için basit include yapıyoruz)
         $data = [
             'tenantId' => $tenantId,
             'tenantName' => $tenantName,
             'properties' => $properties,
+            'featuredProperties' => $featuredProperties,
+            'aboutTitle' => $aboutTitle,
+            'aboutText' => $aboutText,
             'pageTitle' => $tenantName . ' - Satılık ve Kiralık İlanlar',
             'metaDescription' => $tenantName . ' ofisinin güncel satılık ve kiralık ilanlarını inceleyin. En uygun fiyatlı gayrimenkuller.'
         ];
@@ -49,22 +64,18 @@ class ShowcaseController {
     }
 
     public function show(int $id): void {
-        $tenantId = (int)($_GET['tenant'] ?? 0);
-        if ($tenantId <= 0) {
-            echo "Geçersiz dükkan bağlantısı. Lütfen linki kontrol ediniz.";
-            exit;
-        }
-
         $db = \Config\Database::getInstance()->getConnection();
 
-        $stmt = $db->prepare("SELECT p.*, t.name as tenant_name, t.phone as tenant_phone FROM properties p JOIN tenants t ON p.tenant_id = t.id WHERE p.id = :id AND p.tenant_id = :t AND p.status IN ('for_sale', 'for_rent') LIMIT 1");
-        $stmt->execute([':id' => $id, ':t' => $tenantId]);
+        $stmt = $db->prepare("SELECT p.*, t.name as tenant_name, t.phone as tenant_phone FROM properties p JOIN tenants t ON p.tenant_id = t.id WHERE p.id = :id AND p.status IN ('for_sale', 'for_rent') LIMIT 1");
+        $stmt->execute([':id' => $id]);
         $property = $stmt->fetch();
 
         if (!$property) {
             echo "İlan bulunamadı veya yayından kaldırılmış.";
             exit;
         }
+
+        $tenantId = (int) ($property['tenant_id'] ?? 0);
 
         $stmtImg = $db->prepare("SELECT * FROM property_images WHERE property_id = :id ORDER BY is_cover DESC, id ASC");
         $stmtImg->execute([':id' => $id]);

@@ -16,6 +16,65 @@
     <?php if(isset($metaDescription)): ?>
     <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
     <?php endif; ?>
+    <?php
+        $details = json_decode($property['details'] ?? '[]', true) ?? [];
+        $catStr = $property['category'] === 'residential' ? 'Konut' : ($property['category'] === 'commercial' ? 'İş Yeri' : 'Arsa');
+        $statStr = $property['status'] === 'for_sale' ? 'Satılık' : 'Kiralık';
+        $titleText = !empty($property['title']) ? $property['title'] : (($property['city'] ?? '') . ' / ' . ($property['district'] ?? '') . ' - ' . $statStr . ' ' . $catStr);
+        $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '');
+        $firstImage = isset($images[0]['image_path']) ? property_image_url((string)$images[0]['image_path']) : '';
+        $ogTitle = htmlspecialchars($pageTitle ?? $titleText);
+        $ogDescription = htmlspecialchars($metaDescription ?? $titleText);
+    ?>
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="<?= $ogTitle ?>">
+    <meta property="og:description" content="<?= $ogDescription ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($currentUrl) ?>">
+    <?php if ($firstImage !== ''): ?>
+    <meta property="og:image" content="<?= htmlspecialchars($firstImage) ?>">
+    <?php endif; ?>
+    <meta property="og:locale" content="tr_TR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= $ogTitle ?>">
+    <meta name="twitter:description" content="<?= $ogDescription ?>">
+    <?php if ($firstImage !== ''): ?>
+    <meta name="twitter:image" content="<?= htmlspecialchars($firstImage) ?>">
+    <?php endif; ?>
+    <script type="application/ld+json">
+        <?= json_encode([
+            '@context' => 'https://schema.org',
+            '@type' => 'RealEstateListing',
+            'name' => $titleText,
+            'description' => $metaDescription ?? $titleText,
+            'url' => $currentUrl,
+            'image' => $firstImage !== '' ? array_map('trim', array_filter([$firstImage])) : [],
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => $property['city'] ?? '',
+                'addressRegion' => $property['district'] ?? ''
+            ],
+            'itemOffered' => [
+                '@type' => $property['category'] === 'commercial' ? 'Office' : ($property['category'] === 'residential' ? 'Apartment' : 'Land'),
+                'name' => $titleText,
+                'numberOfRooms' => !empty($details['rooms']) ? $details['rooms'] : null,
+                'floorSize' => !empty($details['net_m2']) ? [
+                    '@type' => 'QuantitativeValue',
+                    'value' => $details['net_m2'],
+                    'unitCode' => 'MTK'
+                ] : null
+            ],
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => (float)$property['price'],
+                'priceCurrency' => 'TRY',
+                'availability' => 'https://schema.org/InStock',
+                'seller' => [
+                    '@type' => 'RealEstateAgent',
+                    'name' => $property['tenant_name'] ?? ''
+                ]
+            ]
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -35,7 +94,7 @@
         <div>
             <h4 class="mb-0"><i class="bi bi-buildings text-primary"></i> <?= htmlspecialchars($tenantName) ?></h4>
         </div>
-        <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase') . '?tenant=' . (int) $tenantId) ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Vitrine Dön</a>
+        <a href="<?= htmlspecialchars(\web_url('/emlak/public/vitrin') . '?tenant=' . (int) $tenantId) ?>" class="btn btn-outline-light btn-sm"><i class="bi bi-arrow-left"></i> Vitrine Dön</a>
     </div>
 </header>
 

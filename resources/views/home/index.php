@@ -93,7 +93,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <?php foreach ($tenants as $tenant): ?>
             <div class="col">
-                <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase?tenant=' . $tenant['id'])) ?>" class="text-decoration-none">
+                <a href="<?= htmlspecialchars(\web_url('/emlak/public/vitrin?tenant=' . $tenant['id'])) ?>" class="text-decoration-none">
                     <div class="card tenant-card h-100">
                         <div class="tenant-icon">
                             <i class="bi bi-shop"></i>
@@ -119,6 +119,48 @@
             </div>
             <?php endif; ?>
         </div>
+
+        <section class="mt-5">
+            <div class="d-flex align-items-center justify-content-between mb-4 flex-column flex-md-row gap-3">
+                <div>
+                    <h2 style="font-weight: 700; color: #343a40;">Öne Çıkan İlanlar</h2>
+                    <p class="text-muted mb-0">Ana sayfadan direkt en yeni ilanlara ulaşın, Googlebot için güçlü iç linkleme sağlayın.</p>
+                </div>
+                <a href="<?= htmlspecialchars(\web_url('/emlak/public/vitrin')) ?>" class="btn btn-outline-primary fw-bold">Tüm Vitrini Gör</a>
+            </div>
+
+            <?php if (!empty($featuredProperties)): ?>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                    <?php foreach ($featuredProperties as $prop): ?>
+                        <?php
+                            $titleText = !empty($prop['title']) ? htmlspecialchars($prop['title']) : htmlspecialchars($prop['city'] . ' / ' . $prop['district']);
+                            $priceText = number_format((float)$prop['price'], 0, ',', '.') . ' TL';
+                        ?>
+                        <div class="col">
+                            <div class="card tenant-card h-100">
+                                <?php if (!empty($prop['cover_image'])): ?>
+                                    <img src="<?= htmlspecialchars(\property_image_url((string)$prop['cover_image'])) ?>" class="card-img-top" alt="<?= $titleText ?>">
+                                <?php else: ?>
+                                    <div class="card-img-placeholder">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="tenant-name"><?= $titleText ?></h5>
+                                    <p class="text-muted mb-2"><?= htmlspecialchars($prop['district'] . ' / ' . $prop['city']) ?></p>
+                                    <p class="fw-bold text-success mb-3"><?= $priceText ?></p>
+                                    <a href="<?= htmlspecialchars(property_show_url($prop)) ?>" class="btn btn-primary w-100 fw-bold">İlanı Görüntüle</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="text-center py-4">
+                    <p class="text-muted">Şu anda öne çıkan ilan bulunmuyor. Sistemimizdeki yeni ilanları yakından takip edin.</p>
+                </div>
+            <?php endif; ?>
+        </section>
     </main>
 
     <footer class="footer-action">

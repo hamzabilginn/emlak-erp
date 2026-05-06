@@ -97,7 +97,7 @@
                                         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
                                         $hostUrl = $protocol . $_SERVER['HTTP_HOST'];
                                         $tenantRef = $_SESSION['tenant_id'] ?? 0;
-                                        $propLink = $hostUrl . \web_url('/emlak/public/showcase/show/' . $prop['id']) . '?tenant=' . urlencode((string) $tenantRef);
+                                        $propLink = $hostUrl . property_show_url($prop);
 
                                         $whatsappText = rawurlencode("Merhaba, ilgilendiğiniz {$waDistrict} {$waRooms}{$waTitle} ilanımızın fotoğraflı detaylarına buradan bakabilirsiniz: {$propLink}");
                                     ?>

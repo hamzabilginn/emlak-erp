@@ -124,7 +124,7 @@
                                 </div>
                             </div>
                             <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
-                                <a href="<?= htmlspecialchars(\web_url('/emlak/public/showcase/show/' . (int) $prop['id']) . '?tenant=' . (int) $prop['tenant_id']) ?>"
+                                <a href="<?= htmlspecialchars(property_show_url($prop)) ?>"
                                    target="_blank" rel="noopener"
                                    class="btn btn-outline-primary btn-sm rounded-pill d-flex align-items-center justify-content-center"
                                    title="İlanın müşteri vitrinindeki detay ve fotoğrafları">

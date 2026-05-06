@@ -69,6 +69,7 @@ class PropertyController extends BaseController {
             'key_status' => htmlspecialchars(trim($_POST['key_status'] ?? 'Bizde')),
             'key_number' => htmlspecialchars(trim($_POST['key_number'] ?? ''))
         ];
+        $data['slug'] = \slugify($data['title'] . ' ' . $data['city'] . ' ' . $data['district']);
 
         // 2. Teknik Detayları (Oda Sayısı, m2 vs) Dinamik Olarak JSONB (JSON String) yap.
         $detailsArray = $_POST['details'] ?? [];
@@ -141,6 +142,7 @@ class PropertyController extends BaseController {
             'key_status' => trim((string) ($_POST['key_status'] ?? 'Bizde')),
             'key_number' => trim((string) ($_POST['key_number'] ?? ''))
         ];
+        $data['slug'] = \slugify($data['title'] . ' ' . $data['city'] . ' ' . $data['district']);
 
         $detailsArray = $_POST['details'] ?? [];
         $detailsClean = array_filter($detailsArray, function($value) {

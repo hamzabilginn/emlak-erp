@@ -16,7 +16,7 @@ class SitemapController {
         $tenants = $db->query("SELECT id FROM tenants WHERE status = 'active'")->fetchAll();
 
         // 2. Tüm Aktif İlanları (Properties) Çek
-        $properties = $db->query("SELECT id, tenant_id FROM properties WHERE status IN ('for_sale', 'for_rent')")->fetchAll();
+        $properties = $db->query("SELECT id, title, city, district, tenant_id FROM properties WHERE status IN ('for_sale', 'for_rent')")->fetchAll();
 
         echo '<?xml version="1.0" encoding="UTF-8"?>';
         echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
@@ -31,7 +31,13 @@ class SitemapController {
 
         // --- İLAN DETAY SAYFALARI ---
         foreach ($properties as $p) {
-            echo '<url><loc>' . $baseUrl . '/showcase/show/' . $p['id'] . '?tenant=' . $p['tenant_id'] . '</loc><priority>0.6</priority></url>';
+            $slug = trim((string) ($p['slug'] ?? ''));
+            if ($slug === '') {
+                $slug = preg_replace('/[^a-z0-9]+/u', '-', mb_strtolower(trim(($p['title'] ?? '') . ' ' . ($p['city'] ?? '') . ' ' . ($p['district'] ?? '')), 'UTF-8'));
+                $slug = trim($slug, '-');
+                $slug = $slug === '' ? 'ilan' : $slug;
+            }
+            echo '<url><loc>' . $baseUrl . '/ilan/' . rawurlencode($slug) . '-' . $p['id'] . '</loc><priority>0.6</priority></url>';
         }
 
         echo '</urlset>';

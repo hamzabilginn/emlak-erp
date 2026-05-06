@@ -20,11 +20,15 @@ class HomeController extends BaseController {
         $stmt = $db->query($sql);
         $tenants = $stmt->fetchAll();
 
+        $featuredStmt = $db->query("SELECT p.id, p.slug, p.title, p.city, p.district, p.price, p.status, p.category, p.tenant_id, (SELECT image_path FROM property_images pi WHERE pi.property_id = p.id ORDER BY is_cover DESC, id ASC LIMIT 1) AS cover_image FROM properties p WHERE p.status IN ('for_sale', 'for_rent') ORDER BY p.id DESC LIMIT 4");
+        $featuredProperties = $featuredStmt->fetchAll();
+
         // BaseController render metodu ile sayfayı gösteriyoruz (layout içine sarılmaz)
         $data = [
             'pageTitle' => 'Emlak Platformu - Güvenilir Emlak Ofisleri',
             'metaDescription' => 'Ankara emlakçı, Keçiören emlakçı arayışınız için en güncel ilanlar. Tüm emlak ofislerini tek platformda görüntüleyin ve kiralık, satılık ev arayışınızı kolaylaştırın.',
-            'tenants' => $tenants
+            'tenants' => $tenants,
+            'featuredProperties' => $featuredProperties
         ];
         
         // Bu controller'ın render edilmesi için view'ın doğrudan çalıştırılmasını sağlıyoruz,
