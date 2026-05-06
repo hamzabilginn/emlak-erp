@@ -13,10 +13,10 @@ class RegisterController extends BaseController {
             return;
         }
 
-        // Render register page using render method but we will handle layout in BaseController
+        // Render register page and explicitly set useLayout to false
         $this->render('register/index', [
             'pageTitle' => 'Yeni Şube Kaydı | Emlak CRM'
-        ]);
+        ], false);
     }
 
     public function store(): void {

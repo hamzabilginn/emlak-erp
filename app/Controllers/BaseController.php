@@ -14,7 +14,7 @@ abstract class BaseController {
      * @param string $view Yüklenmek istenen dosyanın adı (örn. 'auth/login' -> 'resources/views/auth/login.php')
      * @param array $data View içine aktarılmak istenen değişkenler dizisi (örn. ['users' => $userData])
      */
-    protected function render(string $view, array $data = []): void {
+    protected function render(string $view, array $data = [], bool $useLayout = true): void {
         // Gelen dizideki elementleri, isimleriyle aynı adlı değişkenlere dönüştür
         // Örn: $data['title'] = "Giriş Yap" -> View içinde '$title' değişkeni olur.
         if (!empty($data)) {
@@ -36,10 +36,11 @@ abstract class BaseController {
             
             // Eğer giriş sayfasındaysa (auth/*), kayıt sayfasındaysa (register/*) veya yazdırılabilir belge (document) sayfasındaysa layout'dan çıksın.
             // Sadece components view'ı ekrana basarak matbaa tasarımına uyum sağlasın.
-            if(file_exists($layout) && 
-               strpos($view, 'auth/') === false && 
-               strpos($view, 'register/') === false && 
-               strpos($view, 'document') === false) {
+            $isAuth = strpos($view, 'auth/') !== false;
+            $isRegister = strpos($view, 'register/') !== false;
+            $isDocument = strpos($view, 'document') !== false;
+
+            if($useLayout && file_exists($layout) && !$isAuth && !$isRegister && !$isDocument) {
                 require_once $layout;
             } else {
                 echo $content;
