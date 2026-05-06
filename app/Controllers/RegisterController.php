@@ -7,16 +7,16 @@ use Exception;
 
 class RegisterController extends BaseController {
     
-<?php
     public function index(): void {
         if (isset($_SESSION['user_id'])) {
             $this->redirect('/emlak/public/property/index');
             return;
         }
 
-        // Render register page without layout
-        $pageTitle = 'Yeni Şube Kaydı | Emlak CRM';
-        require_once dirname(dirname(__DIR__)) . '/resources/views/register/index.php';
+        // Render register page using render method but we will handle layout in BaseController
+        $this->render('register/index', [
+            'pageTitle' => 'Yeni Şube Kaydı | Emlak CRM'
+        ]);
     }
 
     public function store(): void {
