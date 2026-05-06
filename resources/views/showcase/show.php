@@ -12,7 +12,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="KTUe-TDE8-rODsoU-xXqDBW4PxoXV2aP_S0HSv9xzb8" />
-    <title><?= htmlspecialchars(!empty($property['title']) ? $property['title'] : ($property['city'] . ' / ' . $property['district'] . ' - ' . ($property['status'] === 'for_sale' ? 'Satılık' : 'Kiralık') . ' ' . ($property['category'] === 'residential' ? 'Konut' : ($property['category'] === 'commercial' ? 'İş Yeri' : 'Arsa')))) ?> - <?= htmlspecialchars($tenantName) ?></title>
+    <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) : 'İlan Detayı - ' . htmlspecialchars($tenantName) ?></title>
+    <?php if(isset($metaDescription)): ?>
+    <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
+    <?php endif; ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>

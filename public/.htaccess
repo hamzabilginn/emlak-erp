@@ -1,4 +1,4 @@
-﻿RewriteEngine On
+RewriteEngine On
 
 # Sondaki gereksiz / kaldır
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -21,6 +21,12 @@ RewriteRule ^yer-gosterme-ekle/?$ index.php?url=viewing/create [QSA,L]
 
 RewriteRule ^ortak-havuz/?$ index.php?url=network/index [QSA,L]
 RewriteRule ^esnaf-kasasi/?$ index.php?url=cashbox/index [QSA,L]
+
+RewriteRule ^kayit-ol/?$ index.php?url=register/index [QSA,L]
+RewriteRule ^kayit-islemi/?$ index.php?url=register/store [QSA,L]
+
+RewriteRule ^sitemap\.xml$ index.php?url=sitemap/index [QSA,L]
+RewriteRule ^robots\.txt$ index.php?url=sitemap/robots [QSA,L]
 
 RewriteRule ^giris-yap/?$ index.php?url=auth/login [QSA,L]
 RewriteRule ^cikis-yap/?$ index.php?url=auth/logout [QSA,L]

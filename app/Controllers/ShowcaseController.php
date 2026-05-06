@@ -39,7 +39,9 @@ class ShowcaseController {
         $data = [
             'tenantId' => $tenantId,
             'tenantName' => $tenantName,
-            'properties' => $properties
+            'properties' => $properties,
+            'pageTitle' => $tenantName . ' - Satılık ve Kiralık İlanlar',
+            'metaDescription' => $tenantName . ' ofisinin güncel satılık ve kiralık ilanlarını inceleyin. En uygun fiyatlı gayrimenkuller.'
         ];
 
         extract($data);
@@ -68,12 +70,18 @@ class ShowcaseController {
         $stmtImg->execute([':id' => $id]);
         $images = $stmtImg->fetchAll();
 
+        $catStr = $property['category'] === 'residential' ? 'Konut' : ($property['category'] === 'commercial' ? 'İş Yeri' : 'Arsa');
+        $statStr = $property['status'] === 'for_sale' ? 'Satılık' : 'Kiralık';
+        $titleText = !empty($property['title']) ? $property['title'] : "{$property['city']} / {$property['district']} - {$statStr} {$catStr}";
+
         $data = [
             'tenantId' => $tenantId,
             'tenantName' => $property['tenant_name'],
             'tenantPhone' => $property['tenant_phone'],
             'property' => $property,
-            'images' => $images
+            'images' => $images,
+            'pageTitle' => $titleText . ' | ' . $property['tenant_name'],
+            'metaDescription' => $titleText . ' ilanı detayları ve fiyat bilgisi. ' . $property['tenant_name'] . ' güvencesiyle.'
         ];
 
         extract($data);

@@ -78,6 +78,13 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Giriş Yap</button>
+
+        <div class="mt-4 text-center">
+            <p class="text-muted mb-2">Emlak ERP platformunda yerinizi alın</p>
+            <a href="<?= htmlspecialchars(\web_url('/emlak/public/register/index')) ?>" class="btn btn-outline-success w-100 fw-bold">
+                <i class="bi bi-shop"></i> Kendi Şubeni Aç
+            </a>
+        </div>
     </form>
 </div>
 

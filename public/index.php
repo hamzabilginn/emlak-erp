@@ -119,7 +119,7 @@ if (!empty($segments[0]) && strcasecmp($segments[0], 'uploads') === 0) {
 }
 
 // Kök URL: Dashboard (oturum yoksa Auth'a yönlendirir). HomeController dosyasına bağımlılık olmasın diye burada tanımlandı.
-$controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'DashboardController';
+$controllerName = !empty($segments[0]) ? ucfirst($segments[0]) . 'Controller' : 'HomeController';
 $methodName = !empty($segments[1]) ? $segments[1] : 'index';
 $params = array_slice($segments, 2);
 
