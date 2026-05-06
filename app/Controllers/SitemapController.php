@@ -5,52 +5,35 @@ use Config\Database;
 use PDO;
 
 class SitemapController {
-    
-    public function index(): void {
+    public function index() {
+        // XML header'ını ayarla
+        header("Content-Type: application/xml; charset=utf-8");
+        
         $db = Database::getInstance()->getConnection();
-        
-        $sql = "SELECT p.id, p.updated_at, p.tenant_id
-                FROM properties p
-                JOIN tenants t ON p.tenant_id = t.id
-                WHERE p.status IN ('for_sale', 'for_rent') AND t.status = 'active'";
-        $stmt = $db->query($sql);
-        $properties = $stmt->fetchAll();
+        $baseUrl = "https://emlak-erp.onrender.com";
 
-        header('Content-Type: application/xml; charset=utf-8');
-        
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+        // 1. Tüm Aktif Ofisleri (Tenants) Çek
+        $tenants = $db->query("SELECT id FROM tenants WHERE status = 'active'")->fetchAll();
 
-        // Ana Sayfa
-        $homeUrl = $xml->addChild('url');
-        $homeUrl->addChild('loc', \web_url('/emlak/public/'));
-        $homeUrl->addChild('priority', '1.0');
-        
-        // Vitrin/İlan Sayfaları
-        foreach ($properties as $prop) {
-            $url = $xml->addChild('url');
-            $loc = \web_url('/emlak/public/showcase/show/' . $prop['id'] . '?tenant=' . $prop['tenant_id']);
-            $url->addChild('loc', htmlspecialchars($loc));
-            
-            // updated_at PostgreSQL TIMESTAMP (Y-m-d H:i:s), sitemap için W3C Datetime'a çevirelim
-            $date = date('Y-m-d\TH:i:sP', strtotime($prop['updated_at']));
-            $url->addChild('lastmod', $date);
-            $url->addChild('priority', '0.8');
+        // 2. Tüm Aktif İlanları (Properties) Çek
+        $properties = $db->query("SELECT id, tenant_id FROM properties WHERE status IN ('for_sale', 'for_rent')")->fetchAll();
+
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+        // --- ANA SAYFA ---
+        echo '<url><loc>' . $baseUrl . '/</loc><priority>1.0</priority></url>';
+
+        // --- OFİS VİTRİNLERİ ---
+        foreach ($tenants as $t) {
+            echo '<url><loc>' . $baseUrl . '/vitrin?tenant=' . $t['id'] . '</loc><priority>0.8</priority></url>';
         }
 
-        echo $xml->asXML();
-    }
-    
-    public function robots(): void {
-        header('Content-Type: text/plain; charset=utf-8');
-        
-        $sitemapUrl = \web_url('/emlak/public/sitemap.xml');
-        
-        echo "User-agent: *\n";
-        echo "Disallow: /auth/\n";
-        echo "Disallow: /dashboard/\n";
-        echo "Disallow: /property/\n";
-        echo "Disallow: /customer/\n";
-        echo "Allow: /\n\n";
-        echo "Sitemap: {$sitemapUrl}\n";
+        // --- İLAN DETAY SAYFALARI ---
+        foreach ($properties as $p) {
+            echo '<url><loc>' . $baseUrl . '/showcase/show/' . $p['id'] . '?tenant=' . $p['tenant_id'] . '</loc><priority>0.6</priority></url>';
+        }
+
+        echo '</urlset>';
     }
 }
