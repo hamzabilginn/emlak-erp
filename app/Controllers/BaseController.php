@@ -34,9 +34,12 @@ abstract class BaseController {
             // Eğer ana layout dosyası varsa, sayfayı içine sar
             $layout = $base . '/resources/views/layouts/main.php';
             
-            // Eğer giriş sayfasındaysa (auth/*), veya yazdırılabilir belge (document) sayfasındaysa layout'dan çıksın.
+            // Eğer giriş sayfasındaysa (auth/*), kayıt sayfasındaysa (register/*) veya yazdırılabilir belge (document) sayfasındaysa layout'dan çıksın.
             // Sadece components view'ı ekrana basarak matbaa tasarımına uyum sağlasın.
-            if(file_exists($layout) && strpos($view, 'auth/') === false && strpos($view, 'document') === false) {
+            if(file_exists($layout) && 
+               strpos($view, 'auth/') === false && 
+               strpos($view, 'register/') === false && 
+               strpos($view, 'document') === false) {
                 require_once $layout;
             } else {
                 echo $content;
