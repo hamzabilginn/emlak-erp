@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /vitrin
+Allow: /showcase
+Disallow: /app/
+Disallow: /config/
+Disallow: /auth/
+
+Sitemap: https://emlak-erp.onrender.com/sitemap.xml
