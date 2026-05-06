@@ -11,7 +11,7 @@
         <h2 class="mb-0">Portföy (İlan) Yönetimi</h2>
         <span class="text-muted">Bütün ofis mülklerinizi tek noktadan görün.</span>
     </div>
-    <a href="<?= htmlspecialchars(\web_url('/emlak/public/property/create')) ?>" class="btn btn-primary d-flex align-items-center">
+    <a href="<?= htmlspecialchars(\web_url('/emlak/public/portfoy-ekle')) ?>" class="btn btn-primary d-flex align-items-center">
         <i class="bi bi-plus-lg me-2"></i> Yeni İlan Ekle
     </a>
 </div>
