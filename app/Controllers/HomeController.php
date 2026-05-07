@@ -20,6 +20,26 @@ class HomeController extends BaseController {
         $stmt = $db->query($sql);
         $tenants = $stmt->fetchAll();
 
+        // Her ofisin adını slugify ederek SEO dostu linkler için hazırlıyoruz
+        foreach ($tenants as &$tenant) {
+            if (function_exists('slugify')) {
+                $tenant['slug'] = slugify($tenant['name']);
+            } else {
+                $text = str_replace(
+                    ['ş', 'Ş', 'ı', 'İ', 'ğ', 'Ğ', 'ü', 'Ü', 'ö', 'Ö', 'ç', 'Ç'],
+                    ['s', 's', 'i', 'i', 'g', 'g', 'u', 'u', 'o', 'o', 'c', 'c'],
+                    $tenant['name']
+                );
+                $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+                $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+                $text = preg_replace('~[^-\w]+~', '', $text);
+                $text = trim($text, '-');
+                $text = preg_replace('~-+~', '-', $text);
+                $tenant['slug'] = strtolower($text);
+            }
+        }
+        unset($tenant);
+
         $featuredStmt = $db->query("SELECT p.id, p.slug, p.title, p.city, p.district, p.price, p.status, p.category, p.tenant_id, (SELECT image_path FROM property_images pi WHERE pi.property_id = p.id ORDER BY is_cover DESC, id ASC LIMIT 1) AS cover_image FROM properties p WHERE p.status IN ('for_sale', 'for_rent') ORDER BY p.id DESC LIMIT 4");
         $featuredProperties = $featuredStmt->fetchAll();
 

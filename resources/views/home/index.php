@@ -14,6 +14,20 @@
     <meta name="description" content="<?= htmlspecialchars($metaDescription) ?>">
     <!-- SEO Meta Etiketleri -->
     <meta name="robots" content="index, follow">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Emlak Platformu",
+      "url": "<?= htmlspecialchars(\web_url('')) ?>",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Keçiören",
+        "addressRegion": "Ankara",
+        "addressCountry": "TR"
+      }
+    }
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -93,7 +107,8 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <?php foreach ($tenants as $tenant): ?>
             <div class="col">
-                <a href="<?= htmlspecialchars(\web_url('/emlak/public/vitrin?tenant=' . $tenant['id'])) ?>" class="text-decoration-none">
+                <?php $tSlug = !empty($tenant['slug']) ? $tenant['slug'] : 'emlak-ofisi'; ?>
+                <a href="<?= htmlspecialchars(\web_url('/emlak/public/emlakci/' . $tSlug . '-' . $tenant['id'])) ?>" class="text-decoration-none">
                     <div class="card tenant-card h-100">
                         <div class="tenant-icon">
                             <i class="bi bi-shop"></i>

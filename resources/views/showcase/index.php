@@ -116,7 +116,7 @@
         <?php if (empty($properties)): ?>
             <div class="text-center py-5">
                 <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
-                <h3 class="mt-3 text-secondary">Şu anaktif bir ilan bulunmuyor</h3>
+                <h3 class="mt-3 text-secondary">Şu an aktif bir ilan bulunmuyor</h3>
                 <p class="text-muted">Lütfen daha sonra tekrar ziyaret ediniz.</p>
             </div>
         <?php else: ?>
@@ -129,9 +129,9 @@
                 </div>
                 <div class="col-lg-4">
                     <div class="p-4 rounded-4 border border-gray-200 bg-white shadow-sm">
-                        <h5 class="fw-bold mb-3">Dış Kaynaklar</h5>
+                        <h5 class="fw-bold mb-3">İletişim ve Harici Kaynaklar</h5>
                         <a href="https://www.sahibinden.com/ilan/arama?query=<?= rawurlencode($tenantName) ?>" target="_blank" rel="noopener" class="btn btn-outline-dark w-100 mb-2">
-                            <i class="bi bi-box-arrow-up-right me-2"></i> Sahibinden Arama
+                            <i class="bi bi-box-arrow-up-right me-2"></i> Sahibinden'de Ara
                         </a>
                         <a href="https://www.google.com/search?q=<?= rawurlencode($tenantName . ' emlak') ?>" target="_blank" rel="noopener" class="btn btn-outline-secondary w-100 mb-2">
                             <i class="bi bi-google me-2"></i> Google'da Ara
