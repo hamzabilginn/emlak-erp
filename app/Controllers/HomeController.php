@@ -22,8 +22,8 @@ class HomeController extends BaseController {
 
         // Her ofisin adını slugify ederek SEO dostu linkler için hazırlıyoruz
         foreach ($tenants as &$tenant) {
-            if (function_exists('slugify')) {
-                $tenant['slug'] = slugify($tenant['name']);
+            if (function_exists('\slugify')) {
+                $tenant['slug'] = \slugify($tenant['name']);
             } else {
                 $text = str_replace(
                     ['ş', 'Ş', 'ı', 'İ', 'ğ', 'Ğ', 'ü', 'Ü', 'ö', 'Ö', 'ç', 'Ç'],

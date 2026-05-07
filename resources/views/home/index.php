@@ -108,7 +108,7 @@
             <?php foreach ($tenants as $tenant): ?>
             <div class="col">
                 <?php $tSlug = !empty($tenant['slug']) ? $tenant['slug'] : 'emlak-ofisi'; ?>
-                <a href="<?= htmlspecialchars(\web_url('/emlak/public/emlakci/' . $tSlug . '-' . $tenant['id'])) ?>" class="text-decoration-none">
+                <a href="<?= htmlspecialchars(\web_url('emlakci/' . $tSlug . '-' . $tenant['id'])) ?>" class="text-decoration-none">
                     <div class="card tenant-card h-100">
                         <div class="tenant-icon">
                             <i class="bi bi-shop"></i>
