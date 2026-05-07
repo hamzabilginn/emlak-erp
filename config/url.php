@@ -74,17 +74,16 @@ if (!function_exists('property_image_legacy_uploads_to_supabase_url')) {
 }
 
 if (!function_exists('slugify')) {
-    function slugify(string $text): string {
-        $text = trim(mb_strtolower($text, 'UTF-8'));
-        $text = str_replace([
-            'ş','Ş','ı','İ','ç','Ç','ü','Ü','ö','Ö','ğ','Ğ'
-        ], [
-            's','s','i','i','c','c','u','u','o','o','g','g'
-        ], $text);
-        $text = preg_replace('/[^a-z0-9]+/u', '-', $text);
-        $text = trim($text, '-');
-        return $text === '' ? 'ilan' : $text;
-    }
+ function slugify($text) {
+    $find = array('Ç', 'Ş', 'Ğ', 'Ü', 'İ', 'Ö', 'ç', 'ş', 'ğ', 'ü', 'ı', 'ö');
+    $replace = array('c', 's', 'g', 'u', 'i', 'o', 'c', 's', 'g', 'u', 'i', 'o');
+    $text = str_replace($find, $replace, $text);
+    $text = preg_replace('/[^a-z0-9\s-]/', '', strtolower($text));
+    $text = preg_replace('/[\s-]+/', ' ', $text);
+    $text = trim($text);
+    $text = str_replace(' ', '-', $text);
+    return $text;
+}
 }
 
 if (!function_exists('property_show_url')) {
