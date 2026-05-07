@@ -36,6 +36,8 @@ RewriteRule ^vitrin/?$ index.php?url=showcase/index [QSA,L]
 RewriteRule ^ping/?$ index.php?url=ping/index [QSA,L]
 RewriteRule ^ilan/.+-([0-9]+)/?$ index.php?url=showcase/show/$1 [QSA,L]
 
+RewriteRule ^emlakci/([a-zA-Z0-9_-]+)-([0-9]+)/?$ index.php?url=showcase/index&tenant=$2 [QSA,L]
+
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [L]
