@@ -32,13 +32,11 @@ class SitemapController {
 
         // --- 3. İLAN DETAY SAYFALARI ---
         foreach ($properties as $p) {
-            // Eğer veritabanında slug varsa onu kullan, yoksa geçici bir slug üret
             $slug = !empty($p['slug']) ? $p['slug'] : 'ilan';
-            
-            // SEO Dostu Link Yapısı: /ilan/slug-id
             echo '<url><loc>' . $baseUrl . '/ilan/' . $slug . '-' . $p['id'] . '</loc><priority>0.6</priority></url>';
         }
 
+        // BURADAKİ BOŞ DÖNGÜYÜ SİLDİK (Kodun devamındaki echo '</urlset>'; kalsın)
         echo '</urlset>';
     }
 }
