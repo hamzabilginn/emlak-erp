@@ -15,18 +15,37 @@
     <!-- SEO Meta Etiketleri -->
     <meta name="robots" content="index, follow">
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Emlak Platformu",
-      "url": "<?= htmlspecialchars(\web_url('')) ?>",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Keçiören",
-        "addressRegion": "Ankara",
-        "addressCountry": "TR"
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Emlak ERP Platformu",
+        "url": "<?= htmlspecialchars(\web_url('')) ?>",
+        "logo": "<?= htmlspecialchars(\web_url('public/assets/img/logo.png')) ?>",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Keçiören",
+          "addressRegion": "Ankara",
+          "addressCountry": "TR"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+90-XXX-XXX-XXXX",
+          "contactType": "customer service"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Emlak ERP",
+        "url": "<?= htmlspecialchars(\web_url('')) ?>",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "<?= htmlspecialchars(\web_url('vitrin?q={search_term_string}')) ?>",
+          "query-input": "required name=search_term_string"
+        }
       }
-    }
+    ]
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">

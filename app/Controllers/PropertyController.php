@@ -5,6 +5,7 @@ use App\Models\PropertyModel;
 use App\Models\PropertyImageModel;
 use App\Models\CustomerModel;
 use App\Services\SupabaseStorageClient;
+use App\Services\GoogleIndexingService;
 
 /**
  * Portföy / İlan Yönetimi Controller
@@ -92,6 +93,15 @@ class PropertyController extends BaseController {
                 $_SESSION['success'] = 'Kayıt eklendi. Fotoğraf yükleme: ' . $imgErr;
             } else {
                 $_SESSION['success'] = 'Yeni emlak kaydı portföye başarıyla eklendi.';
+            }
+
+            // Google Indexing API Bildirimi
+            try {
+                $indexingService = new GoogleIndexingService();
+                $propertyUrl = "https://emlak-erp.onrender.com/ilan/" . $data['slug'] . "-" . $propertyId;
+                $indexingService->notify($propertyUrl, 'URL_UPDATED');
+            } catch (\Exception $e) {
+                error_log("Google Indexing API Hatası: " . $e->getMessage());
             }
         } else {
             $_SESSION['error'] = "Ekleme sırasında veritabanı hatası oluştu.";

@@ -40,7 +40,13 @@ class HomeController extends BaseController {
         }
         unset($tenant);
 
-        $featuredStmt = $db->query("SELECT p.id, p.slug, p.title, p.city, p.district, p.price, p.status, p.category, p.tenant_id, (SELECT image_path FROM property_images pi WHERE pi.property_id = p.id ORDER BY is_cover DESC, id ASC LIMIT 1) AS cover_image FROM properties p WHERE p.status IN ('for_sale', 'for_rent') ORDER BY p.id DESC LIMIT 4");
+        // En yeni 4 aktif ilanı (paylaşımlı havuzda olan ve durumu satılık/kiralık olanlar) çekiyoruz.
+        $featuredStmt = $db->query("SELECT p.id, p.slug, p.title, p.city, p.district, p.price, p.status, p.category, p.tenant_id, 
+                (SELECT image_path FROM property_images pi WHERE pi.property_id = p.id ORDER BY is_cover DESC, id ASC LIMIT 1) AS cover_image 
+                FROM properties p 
+                WHERE p.status IN ('for_sale', 'for_rent') 
+                AND p.is_shared_pool = 1
+                ORDER BY p.id DESC LIMIT 4");
         $featuredProperties = $featuredStmt->fetchAll();
 
         // BaseController render metodu ile sayfayı gösteriyoruz (layout içine sarılmaz)

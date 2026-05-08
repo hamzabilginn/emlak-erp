@@ -41,39 +41,71 @@
     <meta name="twitter:image" content="<?= htmlspecialchars($firstImage) ?>">
     <?php endif; ?>
     <script type="application/ld+json">
-        <?= json_encode([
-            '@context' => 'https://schema.org',
-            '@type' => 'RealEstateListing',
-            'name' => $titleText,
-            'description' => $metaDescription ?? $titleText,
-            'url' => $currentUrl,
-            'image' => $firstImage !== '' ? array_map('trim', array_filter([$firstImage])) : [],
-            'address' => [
-                '@type' => 'PostalAddress',
-                'addressLocality' => $property['city'] ?? '',
-                'addressRegion' => $property['district'] ?? ''
-            ],
-            'itemOffered' => [
-                '@type' => $property['category'] === 'commercial' ? 'Office' : ($property['category'] === 'residential' ? 'Apartment' : 'Land'),
+        [
+            <?= json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'RealEstateListing',
                 'name' => $titleText,
-                'numberOfRooms' => !empty($details['rooms']) ? $details['rooms'] : null,
-                'floorSize' => !empty($details['net_m2']) ? [
-                    '@type' => 'QuantitativeValue',
-                    'value' => $details['net_m2'],
-                    'unitCode' => 'MTK'
-                ] : null
-            ],
-            'offers' => [
-                '@type' => 'Offer',
-                'price' => (float)$property['price'],
-                'priceCurrency' => 'TRY',
-                'availability' => 'https://schema.org/InStock',
-                'seller' => [
-                    '@type' => 'RealEstateAgent',
-                    'name' => $property['tenant_name'] ?? ''
+                'description' => $metaDescription ?? $titleText,
+                'url' => $currentUrl,
+                'image' => $firstImage !== '' ? array_map('trim', array_filter([$firstImage])) : [],
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'addressLocality' => $property['city'] ?? '',
+                    'addressRegion' => $property['district'] ?? ''
+                ],
+                'itemOffered' => [
+                    '@type' => $property['category'] === 'commercial' ? 'Office' : ($property['category'] === 'residential' ? 'Apartment' : 'Land'),
+                    'name' => $titleText,
+                    'numberOfRooms' => !empty($details['rooms']) ? $details['rooms'] : null,
+                    'floorSize' => !empty($details['net_m2']) ? [
+                        '@type' => 'QuantitativeValue',
+                        'value' => $details['net_m2'],
+                        'unitCode' => 'MTK'
+                    ] : null
+                ],
+                'offers' => [
+                    '@type' => 'Offer',
+                    'price' => (float)$property['price'],
+                    'priceCurrency' => 'TRY',
+                    'availability' => 'https://schema.org/InStock',
+                    'seller' => [
+                        '@type' => 'RealEstateAgent',
+                        'name' => $property['tenant_name'] ?? ''
+                    ]
                 ]
-            ]
-        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>,
+            <?= json_encode([
+                '@context' => 'https://schema.org',
+                '@type' => 'BreadcrumbList',
+                'itemListElement' => [
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 1,
+                        'name' => 'Ana Sayfa',
+                        'item' => \web_url('')
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 2,
+                        'name' => $statStr . ' ' . $catStr,
+                        'item' => \web_url('vitrin')
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 3,
+                        'name' => $property['city'] ?? 'Şehir',
+                        'item' => \web_url('vitrin?city=' . urlencode($property['city'] ?? ''))
+                    ],
+                    [
+                        '@type' => 'ListItem',
+                        'position' => 4,
+                        'name' => $titleText,
+                        'item' => $currentUrl
+                    ]
+                ]
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>
+        ]
     </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
