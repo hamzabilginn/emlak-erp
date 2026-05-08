@@ -66,7 +66,7 @@ class PropertyController extends BaseController {
             'city'     => trim((string) ($_POST['city'] ?? '')),
             'district' => trim((string) ($_POST['district'] ?? '')),
             'price'    => (float) ($_POST['price'] ?? 0),
-            'is_shared_pool' => isset($_POST['is_shared_pool']) ? 1 : 0,
+            'is_shared_pool' => isset($_POST['is_shared_pool']) ? true : false,
             'key_status' => htmlspecialchars(trim($_POST['key_status'] ?? 'Bizde')),
             'key_number' => htmlspecialchars(trim($_POST['key_number'] ?? ''))
         ];
@@ -148,7 +148,7 @@ class PropertyController extends BaseController {
             'city'     => trim((string) ($_POST['city'] ?? '')),
             'district' => trim((string) ($_POST['district'] ?? '')),
             'price'    => (float) ($_POST['price'] ?? 0),
-            'is_shared_pool' => isset($_POST['is_shared_pool']) ? 1 : 0,
+            'is_shared_pool' => isset($_POST['is_shared_pool']) ? true : false,
             'key_status' => trim((string) ($_POST['key_status'] ?? 'Bizde')),
             'key_number' => trim((string) ($_POST['key_number'] ?? ''))
         ];

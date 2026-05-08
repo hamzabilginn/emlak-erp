@@ -45,7 +45,7 @@ class HomeController extends BaseController {
                 (SELECT image_path FROM property_images pi WHERE pi.property_id = p.id ORDER BY is_cover DESC, id ASC LIMIT 1) AS cover_image 
                 FROM properties p 
                 WHERE p.status IN ('for_sale', 'for_rent') 
-                AND p.is_shared_pool = 1
+                AND p.is_shared_pool = true
                 ORDER BY p.id DESC LIMIT 4");
         $featuredProperties = $featuredStmt->fetchAll();
 
