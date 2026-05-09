@@ -24,6 +24,9 @@ if (file_exists(BASE_PATH . '/vendor/autoload.php')) {
     require_once BASE_PATH . '/vendor/autoload.php';
 } elseif (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
     require_once dirname(__DIR__) . '/vendor/autoload.php';
+} else {
+    // Hata Ayıklama: Eğer kütüphane hala bulunamıyorsa tam yolu ekrana bas
+    die("HATA: Autoloader bulunamadı! Bakılan yol: " . BASE_PATH . '/vendor/autoload.php');
 }
 
 // Web kökü: Render’da /index.php → ''; XAMPP’ta /emlak/public
