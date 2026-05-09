@@ -4,9 +4,13 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     libcurl4-openssl-dev \
+    unzip \
     && docker-php-ext-install -j"`nproc`" pdo pgsql pdo_pgsql curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Composer'ı kur
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN a2enmod rewrite
 
@@ -18,6 +22,9 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /e
 WORKDIR /var/www/html
 
 COPY . /var/www/html/
+
+# Kütüphaneleri yükle
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # .htaccess dosyalarındaki Windows satır sonlarını ve BOM karakterini temizle
 RUN find /var/www/html -name ".htaccess" -exec sed -i '1s/^\xef\xbb\xbf//' {} + && \
