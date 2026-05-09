@@ -80,7 +80,15 @@ abstract class BaseModel {
         $stmt = $this->db->prepare($sql);
         
         foreach ($data as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
+            $type = PDO::PARAM_STR;
+            if (is_bool($value)) {
+                $type = PDO::PARAM_BOOL;
+            } elseif (is_int($value)) {
+                $type = PDO::PARAM_INT;
+            } elseif (is_null($value)) {
+                $type = PDO::PARAM_NULL;
+            }
+            $stmt->bindValue(':' . $key, $value, $type);
         }
         
         if ($stmt->execute()) {
@@ -114,7 +122,15 @@ abstract class BaseModel {
         $stmt->bindValue(':tenant_id', $tenantId, PDO::PARAM_INT);
         
         foreach ($data as $key => $value) {
-            $stmt->bindValue(':' . $key, $value);
+            $type = PDO::PARAM_STR;
+            if (is_bool($value)) {
+                $type = PDO::PARAM_BOOL;
+            } elseif (is_int($value)) {
+                $type = PDO::PARAM_INT;
+            } elseif (is_null($value)) {
+                $type = PDO::PARAM_NULL;
+            }
+            $stmt->bindValue(':' . $key, $value, $type);
         }
         
         return $stmt->execute();
