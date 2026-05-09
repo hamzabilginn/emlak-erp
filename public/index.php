@@ -19,6 +19,11 @@ if (!is_readable($__dash) && !empty($_SERVER['DOCUMENT_ROOT'])) {
 }
 define('BASE_PATH', $__base);
 
+// Composer Autoloader (Kütüphaneler için)
+if (file_exists(BASE_PATH . '/vendor/autoload.php')) {
+    require_once BASE_PATH . '/vendor/autoload.php';
+}
+
 // Web kökü: Render’da /index.php → ''; XAMPP’ta /emlak/public
 $__scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
 define('APP_WEB_BASE', ($__scriptDir === '/' || $__scriptDir === '.') ? '' : rtrim($__scriptDir, '/'));
