@@ -21,10 +21,17 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /e
 
 WORKDIR /var/www/html
 
+# Önce sadece composer dosyalarını kopyala (Cache dostu)
+COPY composer.json /var/www/html/
+
+# Kütüphaneleri yükle (Optimize edilmiş)
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
+
+# Projenin geri kalanını kopyala
 COPY . /var/www/html/
 
-# Kütüphaneleri yükle
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Autoloader'ı finalize et
+RUN composer dump-autoload --optimize --no-dev
 
 # .htaccess dosyalarındaki Windows satır sonlarını ve BOM karakterini temizle
 RUN find /var/www/html -name ".htaccess" -exec sed -i '1s/^\xef\xbb\xbf//' {} + && \
