@@ -169,6 +169,15 @@ class PropertyController extends BaseController {
             } else {
                 $_SESSION['success'] = 'Emlak kaydı güncellendi.';
             }
+
+            // Google Indexing API Bildirimi (güncellenmiş URL'yi Google'a bildir)
+            try {
+                $indexingService = new GoogleIndexingService();
+                $propertyUrl = "https://emlak-erp.onrender.com/ilan/" . $data['slug'] . "-" . $id;
+                $indexingService->notify($propertyUrl, 'URL_UPDATED');
+            } catch (\Exception $e) {
+                error_log("Google Indexing API Hatası (Update): " . $e->getMessage());
+            }
         } else {
              $_SESSION['error'] = 'Güncelleme hatası.';
         }

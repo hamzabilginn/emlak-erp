@@ -36,4 +36,18 @@ class GoogleIndexingService
 
         return $service->urlNotifications->publish($urlNotification);
     }
+
+    /**
+     * Alias method for notify() - calls updateUrl() internally
+     * Used when notifying Google of URL changes
+     */
+    public function notify($url, $type = 'URL_UPDATED')
+    {
+        $service = new Indexing($this->client);
+        $urlNotification = new \Google\Service\Indexing\UrlNotification();
+        $urlNotification->setUrl($url);
+        $urlNotification->setType($type);
+
+        return $service->urlNotifications->publish($urlNotification);
+    }
 }
