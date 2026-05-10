@@ -1,3 +1,6 @@
 .env
 /vendor
 google-service-account.json
+emlakcim-*.json
+# Ignore all service account and credentials files
+*.json
