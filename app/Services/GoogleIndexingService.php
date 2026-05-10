@@ -1,50 +1,39 @@
 <?php
+
 namespace App\Services;
 
 use Google\Client;
 use Google\Service\Indexing;
-use Exception;
 
-class GoogleIndexingService {
-    private Client $client;
-    private string $serviceAccountPath;
+class GoogleIndexingService
+{
+    protected $client;
 
-    public function __construct() {
-        // Kök dizindeki google-service-account.json dosyasını kullanıyoruz
-        $this->serviceAccountPath = dirname(dirname(__DIR__)) . '/google-service-account.json';
-        
+    public function __construct()
+    {
         $this->client = new Client();
         
-        if (file_exists($this->serviceAccountPath)) {
-            $this->client->setAuthConfig($this->serviceAccountPath);
-            $this->client->addScope('https://www.googleapis.com/auth/indexing');
+        // Render'a eklediğin GOOGLE_SERVICE_ACCOUNT_JSON değişkenini okuyoruz
+        $jsonKey = getenv('GOOGLE_SERVICE_ACCOUNT_JSON');
+        
+        if ($jsonKey) {
+            // Eğer değişken varsa, içindeki JSON metnini diziye çevirip koda tanıtıyoruz
+            $this->client->setAuthConfig(json_decode($jsonKey, true));
+        } else {
+            // Eğer değişken yoksa (lokal çalışıyorsan), dosya yolundan okumaya devam edebilir
+            $this->client->setAuthConfig(base_path('emlakcim-495910-2013f86ca7bb.json'));
         }
+        
+        $this->client->addScope('https://www.googleapis.com/auth/indexing');
     }
 
-    /**
-     * Google Indexing API'ye URL bildirimi gönderir.
-     * 
-     * @param string $url Bildirilecek sayfa URL'si
-     * @param string $type İşlem tipi (URL_UPDATED veya URL_DELETED)
-     * @return bool Başarı durumu
-     */
-    public function notify(string $url, string $type = 'URL_UPDATED'): bool {
-        if (!file_exists($this->serviceAccountPath)) {
-            error_log("Google Indexing API Hatası: google-service-account.json dosyası bulunamadı.");
-            return false;
-        }
+    public function updateUrl($url)
+    {
+        $service = new Indexing($this->client);
+        $urlNotification = new \Google\Service\Indexing\UrlNotification();
+        $urlNotification->setUrl($url);
+        $urlNotification->setType('URL_UPDATED');
 
-        try {
-            $indexing = new Indexing($this->client);
-            $urlNotification = new Indexing\UrlNotification();
-            $urlNotification->setUrl($url);
-            $urlNotification->setType($type);
-
-            $indexing->urlNotifications->publish($urlNotification);
-            return true;
-        } catch (Exception $e) {
-            error_log("Google Indexing API Hatası: " . $e->getMessage());
-            return false;
-        }
+        return $service->urlNotifications->publish($urlNotification);
     }
 }
