@@ -15,8 +15,8 @@ $routes = [
     '#^/portfoy-duzenle/([0-9]+)/?$#' => 'property/edit/$1',
     '#^/portfoy-guncelle/([0-9]+)/?$#' => 'property/update/$1',
     '#^/musteriler/?$#' => 'customer/index',
-    '#^/musteri-sahsi/?$#' => 'customer/createIndividual',
-    '#^/musteri-kurumsal/?$#' => 'customer/createCorporate',
+    '#^/musteri-sahsi/?$#' => 'customer/create',
+    '#^/musteri-kurumsal/?$#' => 'customer/create',
     '#^/yer-gosterme/?$#' => 'viewing/index',
     '#^/yer-gosterme-ekle/?$#' => 'viewing/create',
     '#^/ortak-havuz/?$#' => 'network/index',
@@ -196,3 +196,4 @@ if (class_exists($controllerClass)) {
     http_response_code(404);
     echo "404 - Sayfa bulunamadı: {$controllerName}";
 }
+
