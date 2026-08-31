@@ -21,7 +21,7 @@ class GoogleIndexingService
             $this->client->setAuthConfig(json_decode($jsonKey, true));
         } else {
             // Eğer değişken yoksa (lokal çalışıyorsan), dosya yolundan okumaya devam edebilir
-            $this->client->setAuthConfig(base_path('emlakcim-495910-2013f86ca7bb.json'));
+            $this->client->setAuthConfig(dirname(__DIR__, 2) . '/emlakcim-495910-2013f86ca7bb.json');
         }
         
         $this->client->addScope('https://www.googleapis.com/auth/indexing');
