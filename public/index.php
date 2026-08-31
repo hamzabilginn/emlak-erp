@@ -6,6 +6,52 @@ error_reporting(E_ALL);
 
 // Session başlatma
 session_start();
+// --- NEIGHBORHOST EVRENSEL ROUTING BASLANGICI ---
+$reqUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$routes = [
+    '#^/portfoyler/?$#' => 'property/index',
+    '#^/portfoy-ekle/?$#' => 'property/create',
+    '#^/portfoy-kaydet/?$#' => 'property/store',
+    '#^/portfoy-duzenle/([0-9]+)/?$#' => 'property/edit/$1',
+    '#^/portfoy-guncelle/([0-9]+)/?$#' => 'property/update/$1',
+    '#^/musteriler/?$#' => 'customer/index',
+    '#^/musteri-sahsi/?$#' => 'customer/createIndividual',
+    '#^/musteri-kurumsal/?$#' => 'customer/createCorporate',
+    '#^/yer-gosterme/?$#' => 'viewing/index',
+    '#^/yer-gosterme-ekle/?$#' => 'viewing/create',
+    '#^/ortak-havuz/?$#' => 'network/index',
+    '#^/esnaf-kasasi/?$#' => 'cashbox/index',
+    '#^/kayit-ol/?$#' => 'register/index',
+    '#^/kayit-islemi/?$#' => 'register/store',
+    '#^/sitemap\.xml$#' => 'sitemap/index',
+    '#^/giris-yap/?$#' => 'auth/login',
+    '#^/cikis-yap/?$#' => 'auth/logout',
+    '#^/ana-pano/?$#' => 'dashboard/index',
+    '#^/vitrin/?$#' => 'showcase/index',
+    '#^/ping/?$#' => 'ping/index',
+    '#^/ilan/.+-([0-9]+)/?$#' => 'showcase/show/$1',
+    '#^/emlakci/([a-zA-Z0-9_-]+)-([0-9]+)/?$#' => 'showcase/index&tenant=$2',
+];
+
+foreach ($routes as $pattern => $target) {
+    if (preg_match($pattern, $reqUri, $matches)) {
+        if (isset($matches[1])) $target = str_replace('$1', $matches[1], $target);
+        if (isset($matches[2])) $target = str_replace('$2', $matches[2], $target);
+        
+        if (strpos($target, '&') !== false) {
+            $parts = explode('&', $target);
+            $_GET['url'] = $parts[0];
+            foreach(array_slice($parts, 1) as $param) {
+                list($k, $v) = explode('=', $param);
+                $_GET[$k] = $v;
+            }
+        } else {
+            $_GET['url'] = $target;
+        }
+        break;
+    }
+}
+// --- NEIGHBORHOST EVRENSEL ROUTING BITISI ---
 
 // Temel Dizin Tanımlaması (Linux'ta DOCUMENT_ROOT = .../public ise yedek yol)
 $__base = dirname(__DIR__);
